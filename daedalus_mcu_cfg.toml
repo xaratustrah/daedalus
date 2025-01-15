@@ -1,0 +1,21 @@
+# Config and calibration file for daedalus
+
+[mot0]
+limit_outside = 30
+limit_inside = 60
+cal_points = [[82, 1097], [40, 2249]]
+
+[mot1]
+limit_outside = 30
+limit_inside = 60
+cal_points = [[79, 1160], [30, 2518]]
+
+[mot2]
+limit_outside = 30
+limit_inside = 60
+cal_points = [[77, 1240], [27.5, 2612.0]]
+
+[mot3]
+limit_outside = 30
+limit_inside = 60
+cal_points = [[75.5, 1245.0], [33, 2401]]
