@@ -1,3 +1,4 @@
 RPi.GPIO
 spidev
 loguru
+influxdb-client

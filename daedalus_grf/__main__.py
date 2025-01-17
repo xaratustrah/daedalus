@@ -15,8 +15,8 @@ import argparse
 import random
 import time
 from loguru import logger
+import influxdb_client
 
-#from influxdb import InfluxDBClient
 
 # Validate the TOML file
 def validate_config(config):
@@ -27,6 +27,9 @@ def validate_config(config):
         "tcu.port",
         "grafana.address",
         "grafana.port",
+        "grafana.org",
+        "grafana.bucket",
+        "grafana.token"
     ]
     for key in required_keys:
         keys = key.split(".")
@@ -85,6 +88,9 @@ def main():
     port2 = config["tcu"]["port"]
     address3 = config["grafana"]["address"]
     port3 = config["grafana"]["port"]
+    token = config["grafana"]["token"]
+    org = config["grafana"]["org"]
+    bucket = config["grafana"]["bucket"]
 
     # Subscriber setup
     context = zmq.Context()
@@ -97,10 +103,8 @@ def main():
     socket_tcu.connect(f"{address2}:{port2}")
     socket_tcu.setsockopt_string(zmq.SUBSCRIBE, "")
 
-    # Grafana setup
-    
-    # client = InfluxDBClient(host=f"{address3}", port=f"{port2}")
-    # client.switch_database('database_name')
+    # Grafana setup influxDB
+    grafana_client = influxdb_client.InfluxDBClient(url=f'{address3}:{port3}', token=token, org=org)
 
     while True:
         try:
@@ -118,7 +122,9 @@ def main():
             s4 = combined_json.get("s4")["value"]
 
             nozzle_pressure = combined_json.get("nozzle_pressure")["value"]
-            temperature = combined_json.get("temperature")["value"]
+            
+            # take temperature Cold head T1 for calculations
+            temperature = combined_json.get("temperature1")["value"]
 
             velocity = calculate_jet_velocity(temperature, nozzle_pressure)
             density = calculate_target_density(velocity, s1, s2, s3, s4)
@@ -126,22 +132,28 @@ def main():
             calculated_json = {
                 "velocity": {
                     "name": "velocity",
+                    "dev":"GJ",
                     "value": velocity,
                     "epoch_time": time.time(),
                 },
-                "density": {"name": "density", "value": density, "epoch_time": time.time()},
+                "density": {"name": "density", "dev":"GJ", "value": density, "epoch_time": time.time()},
             }
 
             final_json = combined_json | calculated_json
 
             for key, value in final_json.items():
                 flat_dict = flatten_dict(value)
-                flat_string = ", ".join([f"{k}={v}" for k, v in flat_dict.items()])
+                flat_string = ",".join([f"{k}={v}" for k, v in flat_dict.items()])
 
-                # here send to grafana
-                # client.write_points(final_json)
+                
+                flat_string = flat_string.replace("name=", "").replace(",value", " value").replace(",epoch_time=", " ")
+                flat_string = flat_string[:flat_string.rfind(".")]
                 print(flat_string)
-        
+                
+                with open('beispiel.txt', 'a') as f:
+                    f.write(flat_string + "\n")
+                #grafana_client.write("vacuum,ch=6,dev=GJ_S3,ldev=gj_maxigauge value=1.552e-05 1737127094", time_precision='s')
+                        
         except (EOFError, KeyboardInterrupt):
             logger.success("\nUser input cancelled. Aborting...")
             break

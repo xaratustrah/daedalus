@@ -71,8 +71,21 @@ while True:
         "value": round(random.uniform(5e-10, 1e-4), 8),
         "epoch_time": time.time(),
     }
-    temperature = {
+
+    temperature1 = {
         "name": "temperature",
+        "dev": "GJ_ColdheadT1",
+        "ldev": "lakeshore",
+        "ch": 1,
+        "value": round(random.uniform(3, 300), 2),
+        "epoch_time": time.time(),
+    }
+
+    temperature2 = {
+        "name": "temperature",
+        "dev": "GJ_ColdheadT2",
+        "ldev": "lakeshore",
+        "ch": 2,
         "value": round(random.uniform(3, 300), 2),
         "epoch_time": time.time(),
     }
@@ -84,7 +97,8 @@ while True:
         "e1": e1,
         "e2": e2,
         "e3": e3,
-        "temperature": temperature,
+        "temperature1": temperature1,
+        "temperature2": temperature2,
     }
 
     message = json.dumps(allofthem)
