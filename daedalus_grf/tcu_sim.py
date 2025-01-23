@@ -23,7 +23,7 @@ devices = ["E1", "E2", "E3", "S1", "S2", "S3"]
 while True:
     chosen_device = random.choice(devices)
 
-    s1 = {
+    e1 = {
         "name": "vacuum",
         "ch": 1,
         "dev": "GJ_E1",
@@ -31,7 +31,7 @@ while True:
         "value": round(random.uniform(5e-10, 1e-4), 8),
         "epoch_time": time.time(),
     }
-    s2 = {
+    e2 = {
         "name": "vacuum",
         "ch": 2,
         "dev": "GJ_E2",
@@ -39,7 +39,7 @@ while True:
         "value": round(random.uniform(5e-10, 1e-4), 8),
         "epoch_time": time.time(),
     }
-    s3 = {
+    e3 = {
         "name": "vacuum",
         "ch": 3,
         "dev": "GJ_E3",
@@ -47,7 +47,7 @@ while True:
         "value": round(random.uniform(5e-10, 1e-4), 8),
         "epoch_time": time.time(),
     }
-    e1 = {
+    s1 = {
         "name": "vacuum",
         "ch": 4,
         "dev": "GJ_S1",
@@ -55,7 +55,7 @@ while True:
         "value": round(random.uniform(5e-10, 1e-4), 8),
         "epoch_time": time.time(),
     }
-    e2 = {
+    s2 = {
         "name": "vacuum",
         "ch": 5,
         "dev": "GJ_S2",
@@ -63,7 +63,7 @@ while True:
         "value": round(random.uniform(5e-10, 1e-4), 8),
         "epoch_time": time.time(),
     }
-    e3 = {
+    s3 = {
         "name": "vacuum",
         "ch": 6,
         "dev": "GJ_S3",
