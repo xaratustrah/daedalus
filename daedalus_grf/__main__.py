@@ -162,7 +162,7 @@ def main():
                 flat_string = flat_string[:flat_string.rfind(".")]
                 logger.info(flat_string)
                 
-                with InfluxDBClient(url=influx_url, token=influx_token, debug=True) as client:
+                with InfluxDBClient(url=influx_url, token=influx_token, debug=args.debug) as client:
                     with client.write_api() as writer:
                         writer.write(bucket=influx_bucket, org=influx_org, record=flat_string, write_precision="s")
                                 
