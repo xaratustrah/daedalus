@@ -15,8 +15,7 @@ import argparse
 import random
 import time
 from loguru import logger
-import influxdb_client
-
+from influxdb_client import InfluxDBClient
 
 # Validate the TOML file
 def validate_config(config):
@@ -59,6 +58,7 @@ def calculate_target_density(velocity, s1, s2, s3, s4):
     # here comes the real forumla, for now just a random number
     return random.uniform(1.0e10, 1.0e13)
 
+
 def main():
     # Parse command line arguments
     
@@ -86,13 +86,13 @@ def main():
     port1 = config["mcu"]["port"]
     address2 = config["tcu"]["address"]
     port2 = config["tcu"]["port"]
-    address3 = config["grafana"]["address"]
-    port3 = config["grafana"]["port"]
-    token = config["grafana"]["token"]
-    org = config["grafana"]["org"]
-    bucket = config["grafana"]["bucket"]
-
-    # Subscriber setup
+    
+    influx_url=f'{config["grafana"]["address"]}:{config["grafana"]["port"]}'
+    influx_token = config["grafana"]["token"]
+    influx_org = config["grafana"]["org"]
+    influx_bucket = config["grafana"]["bucket"]
+    
+    # ZMQ setup
     context = zmq.Context()
 
     socket_mcu = context.socket(zmq.SUB)
@@ -102,9 +102,6 @@ def main():
     socket_tcu = context.socket(zmq.SUB)
     socket_tcu.connect(f"{address2}:{port2}")
     socket_tcu.setsockopt_string(zmq.SUBSCRIBE, "")
-
-    # Grafana setup influxDB
-    grafana_client = influxdb_client.InfluxDBClient(url=f'{address3}:{port3}', token=token, org=org)
 
     while True:
         try:
@@ -148,10 +145,14 @@ def main():
                 
                 flat_string = flat_string.replace("name=", "").replace(",value", " value").replace(",epoch_time=", " ")
                 flat_string = flat_string[:flat_string.rfind(".")]
-                print(flat_string)
+                logger.info(flat_string)
                 
-                with open('beispiel.txt', 'a') as f:
-                    f.write(flat_string + "\n")
+                with InfluxDBClient(influx_url, influx_token) as client:
+                    with client.write_api() as writer:
+                        writer.write(bucket=influx_bucket, org=influx_org, record=flat_string)
+        
+                # with open('beispiel.txt', 'a') as f:
+                #    f.write(flat_string + "\n")
                 #grafana_client.write("vacuum,ch=6,dev=GJ_S3,ldev=gj_maxigauge value=1.552e-05 1737127094", time_precision='s')
                         
         except (EOFError, KeyboardInterrupt):
