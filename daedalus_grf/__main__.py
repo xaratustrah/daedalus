@@ -59,7 +59,7 @@ def calculate_target_density(velocity, s1, s2, s3, s4):
     return random.uniform(1.0e10, 1.0e13)
 
 def validate_arguments(args):
-    if args.log and not args.filename:
+    if args.log and not args.logfile:
         raise ValueError('Filename must be provided when logging is enabled')
 
 def main():
@@ -77,7 +77,7 @@ def main():
     
     parser.add_argument('--debug', action='store_true', help='Enable debugging mode')
     parser.add_argument('--log', action='store_true', help='Enable logging mode')
-    parser.add_argument('--filename', type=str, help='Log file name')
+    parser.add_argument('--logfile', type=str, help='Log file name')
 
     args = parser.parse_args()
 
@@ -86,7 +86,7 @@ def main():
     if args.debug:
         logger.info('Debugging mode is enabled')
     if args.log:
-        logger.info(f'Logging to file: {args.filename}')
+        logger.info(f'Logging to file: {args.logfile}')
 
 
     # Read and validate the configuration from the TOML file
@@ -167,7 +167,7 @@ def main():
                         writer.write(bucket=influx_bucket, org=influx_org, record=flat_string, write_precision="s")
                                 
                 if args.log:
-                    with open(f'{args.filename}', 'a') as f:
+                    with open(f'{args.logfile}', 'a') as f:
                         f.write(flat_string + "\n")
                         
         except (EOFError, KeyboardInterrupt):
