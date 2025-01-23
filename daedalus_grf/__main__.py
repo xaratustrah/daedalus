@@ -58,6 +58,9 @@ def calculate_target_density(velocity, s1, s2, s3, s4):
     # here comes the real forumla, for now just a random number
     return random.uniform(1.0e10, 1.0e13)
 
+def validate_arguments(args):
+    if args.log and not args.filename:
+        raise ValueError('Filename must be provided when logging is enabled')
 
 def main():
     # Parse command line arguments
@@ -71,7 +74,20 @@ def main():
     parser.add_argument(
         "--cfg", type=str, required=True, help="Path to the configuration TOML file."
     )
+    
+    parser.add_argument('--debug', action='store_true', help='Enable debugging mode')
+    parser.add_argument('--log', action='store_true', help='Enable logging mode')
+    parser.add_argument('--filename', type=str, help='Log file name')
+
     args = parser.parse_args()
+
+    validate_arguments(args)
+
+    if args.debug:
+        log.info('Debugging mode is enabled')
+    if args.log:
+        log.info(f'Logging to file: {args.filename}')
+
 
     # Read and validate the configuration from the TOML file
     config_path = args.cfg
@@ -141,19 +157,18 @@ def main():
             for key, value in final_json.items():
                 flat_dict = flatten_dict(value)
                 flat_string = ",".join([f"{k}={v}" for k, v in flat_dict.items()])
-
                 
                 flat_string = flat_string.replace("name=", "").replace(",value", " value").replace(",epoch_time=", " ")
                 flat_string = flat_string[:flat_string.rfind(".")]
                 logger.info(flat_string)
                 
-                with InfluxDBClient(influx_url, influx_token) as client:
+                with InfluxDBClient(url=influx_url, token=influx_token, debug=True) as client:
                     with client.write_api() as writer:
-                        writer.write(bucket=influx_bucket, org=influx_org, record=flat_string)
-        
-                # with open('beispiel.txt', 'a') as f:
-                #    f.write(flat_string + "\n")
-                #grafana_client.write("vacuum,ch=6,dev=GJ_S3,ldev=gj_maxigauge value=1.552e-05 1737127094", time_precision='s')
+                        writer.write(bucket=influx_bucket, org=influx_org, record=flat_string, write_precision="s")
+                                
+                if args.log:
+                    with open(f'{args.filename}', 'a') as f:
+                        f.write(flat_string + "\n")
                         
         except (EOFError, KeyboardInterrupt):
             logger.success("\nUser input cancelled. Aborting...")
