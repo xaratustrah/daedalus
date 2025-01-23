@@ -84,9 +84,9 @@ def main():
     validate_arguments(args)
 
     if args.debug:
-        log.info('Debugging mode is enabled')
+        logger.info('Debugging mode is enabled')
     if args.log:
-        log.info(f'Logging to file: {args.filename}')
+        logger.info(f'Logging to file: {args.filename}')
 
 
     # Read and validate the configuration from the TOML file
