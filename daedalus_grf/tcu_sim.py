@@ -18,8 +18,6 @@ context = zmq.Context()
 socket = context.socket(zmq.PUB)
 socket.bind("tcp://*:5555")
 
-devices = ["E1", "E2", "E3", "S1", "S2", "S3"]
-
 while True:
     chosen_device = random.choice(devices)
 
