@@ -121,8 +121,8 @@ def main():
 
     while True:
         try:
-            message_mcu = socket_mcu.recv_string()
-            data_mcu = json.loads(message_mcu)
+            #message_mcu = socket_mcu.recv_string()
+            #data_mcu = json.loads(message_mcu)
 
             message_tcu = socket_tcu.recv_string()
             data_tcu = json.loads(message_tcu)
@@ -154,21 +154,25 @@ def main():
 
             final_json = combined_json | calculated_json
 
+            string_list = []
+            
             for key, value in final_json.items():
                 flat_dict = flatten_dict(value)
                 flat_string = ",".join([f"{k}={v}" for k, v in flat_dict.items()])
                 
                 flat_string = flat_string.replace("name=", "").replace(",value", " value").replace(",epoch_time=", " ")
                 flat_string = flat_string[:flat_string.rfind(".")]
-                logger.info(flat_string)
-                
-                with InfluxDBClient(url=influx_url, token=influx_token, debug=args.debug) as client:
-                    with client.write_api() as writer:
-                        writer.write(bucket=influx_bucket, org=influx_org, record=flat_string, write_precision="s")
-                                
-                if args.log:
-                    with open(f'{args.logfile}', 'a') as f:
-                        f.write(flat_string + "\n")
+            #    logger.info(flat_string)
+                string_list.append(flat_string)
+
+            single_string = "\n".join(string_list)                
+            with InfluxDBClient(url=influx_url, token=influx_token, debug=args.debug) as client:
+                with client.write_api() as writer:
+                    writer.write(bucket=influx_bucket, org=influx_org, record=single_string, write_precision="s")
+                            
+            if args.log:
+                with open(f'{args.logfile}', 'a') as f:
+                    f.write(flat_string + "\n")
                         
         except (EOFError, KeyboardInterrupt):
             logger.success("\nUser input cancelled. Aborting...")
