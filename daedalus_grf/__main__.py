@@ -121,8 +121,8 @@ def main():
 
     while True:
         try:
-            #message_mcu = socket_mcu.recv_string()
-            #data_mcu = json.loads(message_mcu)
+            message_mcu = socket_mcu.recv_string()
+            data_mcu = json.loads(message_mcu)
 
             message_tcu = socket_tcu.recv_string()
             data_tcu = json.loads(message_tcu)
