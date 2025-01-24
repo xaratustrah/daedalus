@@ -89,8 +89,8 @@ while True:
 
     allofthem = {
         "s1": s1,
-        "s2": s1,
-        "s3": s1,
+        "s2": s2,
+        "s3": s3,
         "e1": e1,
         "e2": e2,
         "e3": e3,
