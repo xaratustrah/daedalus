@@ -11,7 +11,7 @@ import json
 import random
 import time
 
-SLEEP = 0.5
+SLEEP = 2
 
 # publisher setup
 context = zmq.Context()
