@@ -214,6 +214,7 @@ def main():
 
             json_from_rest = process_jsons(shared_json1, shared_json2)
             combined_json = data_tcu | data_mcu | json_from_rest
+            print(combined_json)
 
             s1 = combined_json.get("s1")["value"]
             s2 = combined_json.get("s2")["value"]
