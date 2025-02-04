@@ -229,7 +229,7 @@ def main():
             temperature = combined_json.get("temperature1")["value"]
 
             velocity = calculate_jet_velocity(temperature, nozzle_pressure)
-            density = calculate_target_density(velocity, s1, s2, s3, s4_from_mcu)
+            density = calculate_target_density(velocity, s1, s2, s3, s4)
 
             calculated_json = {
                 "velocity": {
