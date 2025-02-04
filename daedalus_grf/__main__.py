@@ -110,6 +110,8 @@ def process_jsons(json1, json2):
         value2 = json2['data']['pressure'] / 100, # convert Pa to mbar
         epoch_time2 = json2['data']['timestampAcq'] / 1_000_000_000
         
+        print(value1.__class__)
+        
     except(KeyError):
         pass # do nothing for now.
 
@@ -215,7 +217,7 @@ def main():
             data_tcu = json.loads(message_tcu)
 
             json_from_rest = process_jsons(shared_json1, shared_json2)
-            print(json_from_rest)
+            # print(json_from_rest)
             combined_json = data_tcu | data_mcu | json_from_rest
             #print(combined_json)
 
