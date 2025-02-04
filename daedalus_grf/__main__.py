@@ -130,7 +130,10 @@ def process_jsons(json1, json2):
         "epoch_time": epoch_time2
     }
 
-    print("\n\n", value1.__class__)
+    print({
+        "s4": s4,
+        "e4": e4,
+    })
 
     return {
         "s4": s4,
