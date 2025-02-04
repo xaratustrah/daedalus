@@ -17,6 +17,10 @@ import time
 from loguru import logger
 from influxdb_client import InfluxDBClient
 
+# REST shared variables
+shared_json1 = {}
+shared_json2 = {}
+
 # Validate the TOML file
 def validate_config(config):
     required_keys = [
@@ -28,7 +32,9 @@ def validate_config(config):
         "grafana.port",
         "grafana.org",
         "grafana.bucket",
-        "grafana.token"
+        "grafana.token",
+        "restapi.resturl1",
+        "restapi.resturl2",
     ]
     for key in required_keys:
         keys = key.split(".")
@@ -62,6 +68,71 @@ def validate_arguments(args):
     if args.log and not args.logfile:
         raise ValueError('Filename must be provided when logging is enabled')
 
+# Function to update the first shared variable
+def update_variable1():
+    global shared_json1
+    s = requests.Session()
+    r = s.get(url1, stream=True)
+    for line in r.iter_lines():
+        if line:
+            byte_array_str = line.decode("utf-8")
+            json_str = byte_array_str.replace("data: ", "")
+            shared_json1 = json.loads(json_str)
+
+# Function to update the second shared variable
+def update_variable2():
+    global shared_json2
+    s = requests.Session()
+    r = s.get(url2, stream=True)
+    for line in r.iter_lines():
+        if line:
+            byte_array_str = line.decode("utf-8")
+            json_str = byte_array_str.replace("data: ", "")
+            shared_json2 = json.loads(json_str)
+       
+def process_jsons(json1, json2):
+    name1 = ""
+    value1 = 0    
+    epoch_time1 = 0
+    
+    name2 = ""
+    value2 = 0    
+    epoch_time2 = 0
+
+    try:
+        name1 = json1['sourceInfo']['deviceName']
+        value1 = json1['data']['pressure'] / 100, # convert Pa to mbar
+        epoch_time1 = json1['data']['timestampAcq'] / 1_000_000_000
+        
+        name2 = json2['sourceInfo']['deviceName']
+        value2 = json2['data']['pressure'] / 100, # convert Pa to mbar
+        epoch_time2 = json2['data']['timestampAcq'] / 1_000_000_000
+        
+    except(KeyError):
+        pass # do nothing for now.
+
+    s4 = {
+        "name": "vacuum",
+        "ch": 7,
+        "dev": name1,
+        "ldev": name1,
+        "value": value1,
+        "epoch_time": epoch_time1
+    }
+    e4 = {
+        "name": "vacuum",
+        "ch": 7,
+        "dev": name2,
+        "ldev": name2,
+        "value": value2,
+        "epoch_time": epoch_time2
+    }
+        
+    return {
+        "s4": s4,
+        "e4": e4,
+    }
+         
 def main():
     # Parse command line arguments
     
@@ -107,6 +178,9 @@ def main():
     influx_token = config["grafana"]["token"]
     influx_org = config["grafana"]["org"]
     influx_bucket = config["grafana"]["bucket"]
+
+    resturl1 = config["restapi"]["resturl1"]
+    resturl2 = config["restapi"]["resturl2"]
     
     # ZMQ setup
     context = zmq.Context()
@@ -119,6 +193,17 @@ def main():
     socket_tcu.connect(f"{address2}:{port2}")
     socket_tcu.setsockopt_string(zmq.SUBSCRIBE, "")
 
+    # REST API
+    # Create and start the first thread
+    update_thread1 = threading.Thread(target=update_variable1)
+    update_thread1.daemon = True  # Daemon thread will exit when the main program exits
+    update_thread1.start()
+
+    # Create and start the second thread
+    update_thread2 = threading.Thread(target=update_variable2)
+    update_thread2.daemon = True  # Daemon thread will exit when the main program exits
+    update_thread2.start()
+
     while True:
         try:
             message_mcu = socket_mcu.recv_string()
@@ -127,20 +212,21 @@ def main():
             message_tcu = socket_tcu.recv_string()
             data_tcu = json.loads(message_tcu)
 
-            combined_json = data_tcu | data_mcu
+            json_from_rest = process_jsons(shared_json1, shared_json2)
+            combined_json = data_tcu | data_mcu | json_from_rest
 
             s1 = combined_json.get("s1")["value"]
             s2 = combined_json.get("s2")["value"]
             s3 = combined_json.get("s3")["value"]
             s4 = combined_json.get("s4")["value"]
-
+            
             nozzle_pressure = combined_json.get("nozzle_pressure")["value"]
             
             # take temperature Cold head T1 for calculations
             temperature = combined_json.get("temperature1")["value"]
 
             velocity = calculate_jet_velocity(temperature, nozzle_pressure)
-            density = calculate_target_density(velocity, s1, s2, s3, s4)
+            density = calculate_target_density(velocity, s1, s2, s3, s4_from_mcu)
 
             calculated_json = {
                 "velocity": {
@@ -149,7 +235,12 @@ def main():
                     "value": velocity,
                     "epoch_time": time.time(),
                 },
-                "density": {"name": "density", "dev":"GJ", "value": density, "epoch_time": time.time()},
+                "density": {
+                    "name": "density",
+                    "dev":"GJ",
+                    "value": density,
+                    "epoch_time": time.time()
+                },
             }
 
             final_json = combined_json | calculated_json

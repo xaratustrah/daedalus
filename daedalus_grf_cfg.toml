@@ -12,3 +12,7 @@ port = 5557
 org = "myorg"
 bucket = "myexperiment"
 token = "mytoken"
+
+[restapi]
+resturl1 = "http://localhost:8678"
+resturl2 = "http://localhost:8679"

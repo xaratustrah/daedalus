@@ -92,8 +92,8 @@ while True:
         "zpos": zpos,
         "nozzle_pressure": nozzle_pressure,
         "shutter": shutter,
-        "s4": s4,
-        "e4": e4,
+#        "s4": s4,
+#        "e4": e4,
     }
 
     message = json.dumps(allofthem)
