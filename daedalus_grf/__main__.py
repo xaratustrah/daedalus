@@ -111,7 +111,7 @@ def process_jsons(json1, json2):
         name2 = json2['sourceInfo']['deviceName']
         value2 = json2['data']['pressure'] / 100, # convert Pa to mbar
         if isinstance(value2, tuple):
-            value2 = value1[0]
+            value2 = value2[0]
         epoch_time2 = int(json2['data']['timestampAcq'] / 1_000_000_000)
                 
     except(KeyError):
