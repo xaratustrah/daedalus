@@ -93,24 +93,24 @@ def update_variable2(url):
             shared_json2 = json.loads(json_str)
        
 def process_jsons(json1, json2):
-    name1 = ""
-    value1 = 0    
-    epoch_time1 = 0
+    name1 = "dummy1"
+    value1 = 0.1    
+    epoch_time1 = 1
     
-    name2 = ""
-    value2 = 0    
-    epoch_time2 = 0
+    name2 = "dummy2"
+    value2 = 0.1  
+    epoch_time2 = 1
 
     try:
         name1 = json1['sourceInfo']['deviceName']
         value1 = json1['data']['pressure'] / 100, # convert Pa to mbar
-        if isinstance(value1, tuple):
+        if isinstance(value1, tuple): # sometimes the value is tuple, why?
             value1 = value1[0]
         epoch_time1 = int(json1['data']['timestampAcq'] / 1_000_000_000)
         
         name2 = json2['sourceInfo']['deviceName']
         value2 = json2['data']['pressure'] / 100, # convert Pa to mbar
-        if isinstance(value2, tuple):
+        if isinstance(value2, tuple): # sometimes the value is tuple, why?
             value2 = value2[0]
         epoch_time2 = int(json2['data']['timestampAcq'] / 1_000_000_000)
                 
