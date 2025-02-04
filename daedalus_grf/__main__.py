@@ -74,7 +74,7 @@ def validate_arguments(args):
 def update_variable1():
     global shared_json1
     s = requests.Session()
-    r = s.get(url1, stream=True)
+    r = s.get(resturl1, stream=True)
     for line in r.iter_lines():
         if line:
             byte_array_str = line.decode("utf-8")
@@ -85,7 +85,7 @@ def update_variable1():
 def update_variable2():
     global shared_json2
     s = requests.Session()
-    r = s.get(url2, stream=True)
+    r = s.get(resturl2, stream=True)
     for line in r.iter_lines():
         if line:
             byte_array_str = line.decode("utf-8")
