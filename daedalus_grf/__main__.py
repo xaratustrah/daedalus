@@ -134,11 +134,6 @@ def process_jsons(json1, json2):
         "epoch_time": epoch_time2
     }
 
-    print({
-        "s4": s4,
-        "e4": e4,
-    })
-
     return {
         "s4": s4,
         "e4": e4,
@@ -224,9 +219,7 @@ def main():
             data_tcu = json.loads(message_tcu)
 
             json_from_rest = process_jsons(shared_json1, shared_json2)
-            # print(json_from_rest)
             combined_json = data_tcu | data_mcu | json_from_rest
-            #print(combined_json)
 
             s1 = combined_json.get("s1")["value"]
             s2 = combined_json.get("s2")["value"]
