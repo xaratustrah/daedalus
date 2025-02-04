@@ -93,43 +93,41 @@ def update_variable2(url):
             shared_json2 = json.loads(json_str)
        
 def process_jsons(json1, json2):
-    name1 = "dummy1"
+    name1 = "GJ_S4"
     value1 = 0.1    
     epoch_time1 = 1
     
-    name2 = "dummy2"
+    name2 = "GJ_E4"
     value2 = 0.1  
     epoch_time2 = 1
 
     try:
         name1 = json1['sourceInfo']['deviceName']
-        value1 = json1['data']['pressure'] / 100, # convert Pa to mbar
+        value1 = float(json1['data']['pressure']) / 100.0, # convert Pa to mbar
         if isinstance(value1, tuple): # sometimes the value is tuple, why?
             value1 = value1[0]
-        epoch_time1 = int(json1['data']['timestampAcq'] / 1_000_000_000)
+        epoch_time1 = float(json1['data']['timestampAcq'] / 1e9)
         
         name2 = json2['sourceInfo']['deviceName']
-        value2 = json2['data']['pressure'] / 100, # convert Pa to mbar
+        value2 = float(json2['data']['pressure']) / 100.0, # convert Pa to mbar
         if isinstance(value2, tuple): # sometimes the value is tuple, why?
             value2 = value2[0]
-        epoch_time2 = int(json2['data']['timestampAcq'] / 1_000_000_000)
+        epoch_time2 = float(json2['data']['timestampAcq'] / 1e9)
                 
     except(KeyError):
         pass # do nothing for now.
 
     s4 = {
         "name": "vacuum",
-        "ch": 7,
-        "dev": name1,
-        "ldev": name1,
+        "dev": "GJ_S4", # Identifier for measurement device
+        "ldev": name1,  # Identifier for logging device
         "value": value1,
         "epoch_time": epoch_time1
     }
     e4 = {
         "name": "vacuum",
-        "ch": 8,
-        "dev": name2,
-        "ldev": name2,
+        "dev": "GJ_E4", # Identifier for measurement device
+        "ldev": name2,  # Identifier for logging device
         "value": value2,
         "epoch_time": epoch_time2
     }
@@ -256,7 +254,6 @@ def main():
             for key, value in final_json.items():
                 flat_dict = flatten_dict(value)
                 flat_string = ",".join([f"{k}={v}" for k, v in flat_dict.items()])
-                
                 flat_string = flat_string.replace("name=", "").replace(",value", " value").replace(",epoch_time=", " ")
                 flat_string = flat_string[:flat_string.rfind(".")]
             #    logger.info(flat_string)
