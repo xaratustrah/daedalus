@@ -109,9 +109,7 @@ def process_jsons(json1, json2):
         name2 = json2['sourceInfo']['deviceName']
         value2 = json2['data']['pressure'] / 100, # convert Pa to mbar
         epoch_time2 = json2['data']['timestampAcq'] / 1_000_000_000
-        
-        print(value1.__class__)
-        
+                
     except(KeyError):
         pass # do nothing for now.
 
@@ -131,7 +129,9 @@ def process_jsons(json1, json2):
         "value": value2,
         "epoch_time": epoch_time2
     }
-        
+
+    print("\n\n", value1.__class__)
+
     return {
         "s4": s4,
         "e4": e4,
