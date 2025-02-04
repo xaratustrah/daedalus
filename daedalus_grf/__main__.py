@@ -123,7 +123,7 @@ def process_jsons(json1, json2):
     }
     e4 = {
         "name": "vacuum",
-        "ch": 7,
+        "ch": 8,
         "dev": name2,
         "ldev": name2,
         "value": value2,
@@ -215,6 +215,7 @@ def main():
             data_tcu = json.loads(message_tcu)
 
             json_from_rest = process_jsons(shared_json1, shared_json2)
+            print(json_from_rest)
             combined_json = data_tcu | data_mcu | json_from_rest
             print(combined_json)
 
