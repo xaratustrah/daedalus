@@ -192,11 +192,13 @@ def main():
     socket_mcu = context.socket(zmq.SUB)
     socket_mcu.connect(f"{address1}:{port1}")
     socket_mcu.setsockopt_string(zmq.SUBSCRIBE, "")
+    socket_mcu.setsockopt(zmq.CONFLATE, 1)  # Keep only the most recent message
 
     socket_tcu = context.socket(zmq.SUB)
     socket_tcu.connect(f"{address2}:{port2}")
     socket_tcu.setsockopt_string(zmq.SUBSCRIBE, "")
-
+    socket_tcu.setsockopt(zmq.CONFLATE, 1)  # Keep only the most recent message
+    
     # REST API
     # Create and start the first thread
     update_thread1 = threading.Thread(target=update_variable1, kwargs={'url' : resturl1})

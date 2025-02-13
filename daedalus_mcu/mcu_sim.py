@@ -77,6 +77,7 @@ while True:
         "value": round(random.uniform(5e-10, 1e-4), 8),
         "epoch_time": time.time(),
     }
+    
     e4 = {
         "name": "vacuum",
         "ch": 8,
