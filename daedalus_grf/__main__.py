@@ -187,7 +187,7 @@ def main():
     resturl1 = config["restapi"]["resturl1"]
     resturl2 = config["restapi"]["resturl2"]
     
-    gas_species = config["gas"]["type"]
+    gas_species = config["gas"]["species"]
     
     # ZMQ setup
     context = zmq.Context()
