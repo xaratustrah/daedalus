@@ -247,8 +247,8 @@ def main():
                 "density": {
                     "name": "density",
                     "dev":"GJ",
+                    "species": gas_species,
                     "value": density,
-                    "species": f'"{gas_species}"',
                     "epoch_time": time.time()
                 },
             }
