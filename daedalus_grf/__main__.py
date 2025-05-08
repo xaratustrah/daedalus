@@ -37,6 +37,7 @@ def validate_config(config):
         "grafana.token",
         "restapi.resturl1",
         "restapi.resturl2",
+        "gas.species",
     ]
     for key in required_keys:
         keys = key.split(".")
@@ -186,6 +187,8 @@ def main():
     resturl1 = config["restapi"]["resturl1"]
     resturl2 = config["restapi"]["resturl2"]
     
+    gas_species = config["gas"]["type"]
+    
     # ZMQ setup
     context = zmq.Context()
 
@@ -245,6 +248,7 @@ def main():
                     "name": "density",
                     "dev":"GJ",
                     "value": density,
+                    "species": gas_species,
                     "epoch_time": time.time()
                 },
             }
