@@ -4,7 +4,7 @@
 <img src="https://raw.githubusercontent.com/xaratustrah/daedalus/master/rsrc/daedalus.jpg" width="512">
 </div>
 
-*daedalus* is an integrated control system for internal multiphase targets .
+*daedalus* is an integrated control system for internal multiphase targets for heavy ion storage rings.
 
 ## Installation
 Please download the latest version of [Raspberry Pi OS Lite](https://www.raspberrypi.com/software/). Newest versions require setting up username / password already in the imager tool. You can also enable SSH from there. Then you can expand file system using the script `raspi-config`. Then you need a couple of things:
@@ -38,4 +38,4 @@ Please see the file [LICENSE.md](./LICENSE.md) for further information about how
 
 ## Acknowledgements
 
-This code is based on a previous work by Ulrich Popp [HoSnoopy@GitHUB](https://github.com/HoSnoopy).
+This code is based on a previous work by Ulrich Popp [HoSnoopy@GitHUB](https://codeberg.org/HoSnoopy). The MCU part is inspired by the code available on [https://codeberg.org/HoSnoopy/TB6600-RPI](https://codeberg.org/HoSnoopy/TB6600-RPI).
