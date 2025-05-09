@@ -61,19 +61,21 @@ while True:
     }
 
     shutter_signal = {
-        "name": "shutter_signal",
+        "name": "shutter",
         "ch": "0",
         "dev": "nozzle",
         "ldev": "daedalus",
+        "type": "signal",
         "value": random.choice([True, False]),
         "epoch_time": time.time(),
     }
 
     shutter_sensor = {
-        "name": "shutter_sensor",
+        "name": "shutter",
         "ch": "0",
         "dev": "nozzle",
         "ldev": "daedalus",
+        "type": "sensor",
         "value": random.choice([True, False]),
         "epoch_time": time.time(),
     }
