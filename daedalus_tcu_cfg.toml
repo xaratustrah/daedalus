@@ -10,6 +10,6 @@ sensor2 = "KRDG?B"
 address = "192.168.207.120"
 port = 7777
 
-[multigauge]
+[maxigauge]
 address = "192.168.207.167"
 port = 8000

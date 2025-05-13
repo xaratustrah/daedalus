@@ -13,7 +13,7 @@ import time
 
 SLEEP = 0.5
 
-# publisher setup
+# ZMQ publisher setup
 context = zmq.Context()
 socket = context.socket(zmq.PUB)
 socket.bind("tcp://*:5555")
