@@ -247,7 +247,7 @@ def main():
                     "dev":"GJ",
                     #"species": gas_species,
                     #"value": density,
-                    "value": f'{density},species="{gas_species}"'
+                    "value": f'{density},species="{gas_species}"',
                     "epoch_time": time.time()
                 },
             }
