@@ -1,4 +1,4 @@
-# Config and calibration file for daedalus
+# Settings for Daedalus MCU
 
 [mot0]
 limit_outside = 30

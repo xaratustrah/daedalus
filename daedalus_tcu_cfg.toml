@@ -1,3 +1,9 @@
+# Settings for Daedalus TCU
+
+[tcu]
+address = "tcp://localhost"
+port = port_number
+
 [grafana]
 address = "tcp://localhost"
 port = port_number
@@ -5,12 +11,12 @@ org = "myorg"
 bucket = "myexperiment"
 token = "mytoken"
 
-[tcu]
-address = "tcp://localhost"
-port = port_number
-
 [lakeshore]
 sensor1 = "sensor1_label"
 sensor2 = "sensor2_label"
+address = "tcp://localhost"
+port = port_number
+
+[multigauge]
 address = "tcp://localhost"
 port = port_number

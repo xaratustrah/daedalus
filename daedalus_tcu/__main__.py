@@ -1,96 +1,115 @@
 import socket
+import re
+from loguru import logger
+
+
 import os
 import time
 import sys
 import argparse
 import toml
 
+SLEEP = 0.5
+
+# Validate the TOML file
+def validate_config(config):
+    required_keys = [
+        "tcu.address",
+        "tcu.port",
+        "grafana.address",
+        "grafana.port",
+        "grafana.org",
+        "grafana.bucket",
+        "grafana.token",
+        "lakeshore.sensor1",
+        "lakeshore.sensor2",
+        "lakeshore.address",
+        "lakeshore.port",
+        "multigauge.address",
+        "multigauge.port",
+    ]
+    for key in required_keys:
+        keys = key.split(".")
+        conf = config
+        for k in keys:
+            if k not in conf:
+                raise ValueError(f"Missing required key: {key}")
+            conf = conf[k]
+
+def validate_arguments(args):
+    if args.log and not args.logfile:
+        raise ValueError('Filename must be provided when logging is enabled')
+
+def get_temperature(host, port, message, timeout=2):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.settimeout(timeout)  # Avoid getting stuck indefinitely
+        s.connect((host, port))
+        s.sendall(message.encode())  # Ensure newline for proper request termination
+        
+        try:
+            response = s.recv(1024).decode()
+        except socket.timeout:
+            return "Timeout: No response received."
+
+    # Extract numeric values using regex
+    return float(re.sub(r'[^0-9.]', '', response))
+
 def main():
+    logger.remove(0)
+    logger.add(sys.stdout, level="INFO")
 
-    # Parse the location of the TOML config file given at the command line
     parser = argparse.ArgumentParser(
-        description="Subscriber script with TOML config"
+        description="Daedalus TCU: Pressure and temperature reader for the Daedalus Project."
     )
-
     parser.add_argument(
-        "--cfg", type=str, required=True, help="Path to TOML config file."
+        "--cfg", type=str, required=True, help="Path to the configuration TOML file."
     )
+    
+    parser.add_argument('--debug', action='store_true', help='Enable debugging mode')
+    parser.add_argument('--log', action='store_true', help='Enable logging mode')
+    parser.add_argument('--logfile', type=str, help='Log file name')
 
     args = parser.parse_args()
 
-    # Read config info from the TOML file
+    validate_arguments(args)
+
+    if args.debug:
+        logger.info('Debugging mode is enabled')
+    if args.log:
+        logger.info(f'Logging to file: {args.logfile}')
+
+
+    # Read and validate the configuration from the TOML file
     config_path = args.cfg
     if not os.path.exists(config_path):
         raise FileNotFoundError(f"TOML file not found: {config_path}")
-    
+
     config = toml.load(config_path)
+    validate_config(config)
 
-    # Extract info from TOML config
-    tcu_address = config["tcu"]["address"]
-    tcu_port = config["tcu"]["port"]
-    
-    token = config["grafana"]["token"]
-    bucket = config["grafana"]["bucket"]
-    org = config["grafana"]["org"]
+    # Extract socket information from the configuration
+    grafana_address = config["grafana"]["address"]
+    grafana_port = config["grafana"]["port"]
+    grafana_org = config["grafana"]["org"]
+    grafana_bucket = config["grafana"]["bucket"]
+    grafana_token = config["grafana"]["token"]
 
-    lakeshore1_sensor = config["lakeshore"]["sensor1"]
-    lakeshore2_sensor = config["lakeshore"]["sensor2"]
+    lakeshore_sensor1 = config["lakeshore"]["sensor1"]
+    lakeshore_sensor2 = config["lakeshore"]["sensor2"]
     lakeshore_address = config["lakeshore"]["address"]
     lakeshore_port = config["lakeshore"]["port"]
 
-    # labels for data values
-    labels = ["vacuum,dev=GJ_E1,ldev=gj_maxigauge,ch=1 value=",
-              "vacuum,dev=GJ_E2,ldev=gj_maxigauge,ch=2 value=",
-              "vacuum,dev=GJ_E3,ldev=gj_maxigauge,ch=3 value=",
-              "vacuum,dev=GJ_S3,ldev=gj_maxigauge,ch=4 value=",
-              "vacuum,dev=GJ_S2,ldev=gj_maxigauge,ch=5 value=",
-              "vacuum,dev=GJ_S1,ldev=gj_maxigauge,ch=6 value=",
-              "temperature,dev=GJ_ColdheadT1,ldev=lakeshore,ch=1 value=",
-              "temperature,dev=GJ_ColdheadT2,ldev=lakeshore,ch=2 value="]
-
-    sock = socket.socket()
+    multigauge_address = config["multigauge"]["address"]
+    multigauge_port = config["multigauge"]["port"]
     
-    sock.connect((tcu_address, tcu_port))
+    # ZMQ setup
+    #context = zmq.Context()
 
-    output_str = [""] * 8
+while True:
+    print(get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor1))
 
-    while True:
 
-        grafana_str = f"curl -sS -XPOST -H \'Authorization: Token {token}\' \"yrfile1:8086/api/v2/write?org={org}&bucket={bucket}&precision=s\" --data-binary \""
+# -------
 
-        # get current local time in seconds since Unix epoch
-        current_time = int(time.mktime(time.localtime()))
-
-        # get temps from lakeshore
-        current_temp1 = os.popen(f"echo {lakeshore1_sensor} | nc -q 1 {lakeshore_address} {lakeshore_port} | sed 's/[^0-9\.]*//g'").read()
-        current_temp2 = os.popen(f"echo {lakeshore2_sensor} | nc -q 1 {lakeshore_address} {lakeshore_port} | sed 's/[^0-9\.]*//g'").read()
-
-        vac_input_str = sock.recv(1024)
-        print(vac_input_str)
-
-        # get vacuum info and add to output_str
-        for i in range(6):
-            output_str[i]=str(vac_input_str[3+i*14:3+i*14+10], encoding="utf-8")
-            output_str[i]+=" "
-
-        # add temps to output_str
-        output_str[6]=str(current_temp1, encoding="utf-8")
-        output_str[6]+=" "
-        output_str[7]=str(current_temp2, encoding="utf-8")
-        output_str[7]+=" "
-
-        # add all info to grafana_str
-        for i in range(8):
-            grafana_str+=labels[i]
-            grafana_str+=output_str[i]
-            grafana_str+=str(current_time)
-            grafana_str+="\n"
-
-        os.system(grafana_str)
-        sys.stdout.flush()
-        time.sleep(1)
-
-main()        
-
-#if __name__ == "__main__":
-#    main()
+if __name__ == "__main__":
+    main()

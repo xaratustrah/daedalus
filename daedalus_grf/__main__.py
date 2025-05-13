@@ -139,13 +139,11 @@ def process_jsons(json1, json2):
     }
          
 def main():
-    # Parse command line arguments
-    
     logger.remove(0)
     logger.add(sys.stdout, level="INFO")
 
     parser = argparse.ArgumentParser(
-        description="Subscriber script with TOML configuration."
+        description="Daedalus GRF: Data aggregator for the Daedalus Project."
     )
     parser.add_argument(
         "--cfg", type=str, required=True, help="Path to the configuration TOML file."

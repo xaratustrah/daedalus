@@ -1,3 +1,5 @@
+# Settings for Daedalus GRF
+
 [mcu]
 address = "tcp://localhost"
 port = 5555
