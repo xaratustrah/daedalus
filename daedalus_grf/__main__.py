@@ -236,17 +236,18 @@ def main():
             density = calculate_target_density(velocity, s1, s2, s3, s4)
 
             calculated_json = {
-                "velocity": {
-                    "name": "velocity",
-                    "dev":"GJ",
-                    "value": velocity,
-                    "epoch_time": time.time(),
-                },
+                # "velocity": {
+                #     "name": "velocity",
+                #     "dev":"GJ",
+                #     "value": velocity,
+                #     "epoch_time": time.time(),
+                # },
                 "density": {
                     "name": "density",
                     "dev":"GJ",
-                    "species": gas_species,
-                    "value": density,
+                    #"species": gas_species,
+                    #"value": density,
+                    "value": f'{density},species="{gas_species}"'
                     "epoch_time": time.time()
                 },
             }
