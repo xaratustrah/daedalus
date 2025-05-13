@@ -51,14 +51,16 @@ def get_temperature(host, port, message, timeout=2):
     return float(re.sub(r'[^0-9.]', '', response))
 
 def get_pressures(pressuresock):
-    data = pressuresock.recv(256)
+    data = pressuresock.recv(1024)
     lines = data.decode().split("\r\n")
-    lst = lines[1].split(',')
-    if len(lst) != 12:
-        raise ValueError(f"Expected length 12, but got {len(lst)}")
-    
-    # return every second value
-    return (lst[i] for i in range(1, len(lst), 2))
+    e1, e2, e3, s3, s2, s1 = [0] * 6
+    for line in lines:
+        lst = line.split(',')
+        if len(lst) == 12:
+            # return every second value                                                                     
+            e1, e2, e3, s3, s2, s1 = (lst[i] for i in range(1, len(lst), 2))
+    return e1, e2, e3, s3, s2, s1
+
 
 def main():
     logger.remove(0)
@@ -128,11 +130,7 @@ def main():
             #print("T1: {t1}")
             #print("T2: {t2}")
 
-            try:
-                e1_val, e2_val, e3_val, s3_val, s2_val, s1_val = get_pressures(pressuresock)
-            
-            except ValueError as e:
-                logger.error(e)
+            e1_val, e2_val, e3_val, s3_val, s2_val, s1_val = get_pressures(pressuresock)
             
             print(e1_val, e2_val, e3_val, s3_val, s2_val, s1_val)
             
