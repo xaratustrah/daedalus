@@ -51,13 +51,15 @@ def get_temperature(host, port, message, timeout=2):
     return float(re.sub(r'[^0-9.]', '', response))
 
 def get_pressures(host, port, timeout=2):
-    e1, e2, e3, s3, s2, s1 = [0] * 6
+    """Retrieve pressure values from a TCP server while handling connection resets."""
+    e1, e2, e3, s3, s2, s1 = [0] * 6  # Initialize values
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(timeout)
             s.connect((host, port))
-            response = s.recv(1024)
+
+            response = s.recv(1024)  # This may raise ConnectionResetError
 
             if not response:  # Ensure data is received
                 return None
@@ -70,15 +72,10 @@ def get_pressures(host, port, timeout=2):
                 if len(lst) == 12:
                     e1, e2, e3, s3, s2, s1 = (lst[i] for i in range(1, len(lst), 2))
 
-    except socket.timeout:
-        print("Timeout: No response received.")
-        return None
-    except socket.error as e:
-        print(f"Socket error: {e}")
-        return None
+    except (socket.timeout, ConnectionResetError, socket.error) as e:
+        print(f"Socket error: {e}. Will try again next time!")
 
     return e1, e2, e3, s3, s2, s1
-
 # -------
 
 def main():
