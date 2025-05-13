@@ -95,7 +95,7 @@ def main():
     #context = zmq.Context()
 
     while True:
-        print(get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor1))
+        print(get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor1+'\n'))
 
 
 # -------
