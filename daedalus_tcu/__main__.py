@@ -130,7 +130,8 @@ def main():
 
             try:
                 e1_val, e2_val, e3_val, s3_val, s2_val, s1_val = get_pressures(pressuresock)
-            except(ValueError as e):
+            
+            except ValueError as e:
                 logger.error(e)
             
             print(e1_val, e2_val, e3_val, s3_val, s2_val, s1_val)
