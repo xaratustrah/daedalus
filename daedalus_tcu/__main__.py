@@ -51,26 +51,31 @@ def get_temperature(host, port, message, timeout=2):
     return float(re.sub(r'[^0-9.]', '', response))
 
 def get_pressures(host, port, timeout=2):
-    
     e1, e2, e3, s3, s2, s1 = [0] * 6
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.settimeout(timeout)  # Avoid getting stuck indefinitely                                           
-        s.connect((host, port))
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(timeout)
+            s.connect((host, port))
+            response = s.recv(1024)
 
-        try:
-            response = s.recv(1024).decode()
+            if not response:  # Ensure data is received
+                return None
 
-            lines = response.split("\r\n")
+            decoded_response = response.decode()
+            lines = decoded_response.split("\r\n")
+
             for line in lines:
                 lst = line.split(',')
                 if len(lst) == 12:
-                    # return every second value                                                            \
-                                                                                                            
                     e1, e2, e3, s3, s2, s1 = (lst[i] for i in range(1, len(lst), 2))
 
-        except socket.timeout:
-            return "Timeout: No response received."
+    except socket.timeout:
+        print("Timeout: No response received.")
+        return None
+    except socket.error as e:
+        print(f"Socket error: {e}")
+        return None
 
     return e1, e2, e3, s3, s2, s1
 
