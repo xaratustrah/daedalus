@@ -103,7 +103,7 @@ def main():
     zmq_socket.bind(zmq_full_adr)
 
     # initialize variables with zero for any case
-    t1, t2, e1, e2, e3, s1, s2, s3 = [0] * 8
+    t1_val, t2_val, e1_val, e2_val, e3_val, s1_val, s2_val, s3_val = [0] * 8
     
     while True:
         
@@ -202,8 +202,6 @@ def main():
         message = json.dumps(allofthem)
         zmq_socket.send_string(message)
         print("\n", message)
-
-
 
         time.sleep(SLEEP)
 
