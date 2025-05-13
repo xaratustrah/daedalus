@@ -53,7 +53,7 @@ def get_temperature(host, port, message, timeout=2):
             temp = float(re.sub(r'[^0-9.]', '', response))
              
     except (socket.timeout, socket.error, ValueError) as e:
-        logger.error(f"{e}. Will try again next time!")
+        logger.error(f"While reading temperature: {e}. Will try again next time!")
 
     # Extract numeric values using regex
     return temp
@@ -79,7 +79,7 @@ def get_pressures(host, port, timeout=2):
                     e1, e2, e3, s3, s2, s1 = (lst[i] for i in range(1, len(lst), 2))
 
     except (socket.timeout, socket.error, ValueError) as e:
-        logger.error(f"{e}. Will try again next time!")
+        logger.error(f"While reading pressures: {e}. Will try again next time!")
 
     return e1, e2, e3, s3, s2, s1
 # -------
