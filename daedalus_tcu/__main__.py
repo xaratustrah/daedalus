@@ -96,8 +96,9 @@ def main():
     # ZMQ publisher setup
     context = zmq.Context()
     zmq_socket = context.socket(zmq.PUB)
-    logger.info(f"Connecting ZMQ publisher to: {tcu_address}:{tcu_port}")
-    zmq_socket.bind(f"{tcu_address}:{tcu_port}")
+    zmq_full_adr = f"{tcu_address}:{tcu_port}"
+    logger.info(f"Connecting ZMQ publisher to: {zmq_full_adr}")
+    zmq_socket.bind(zmq_full_adr)
 
     # initialize variables with zero for any case
     t1, t2, e1, e2, e3, s1, s2, s3 = [0] * 8
