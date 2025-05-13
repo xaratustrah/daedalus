@@ -10,7 +10,7 @@ import toml
 import random
 import json
 
-SLEEP = 1
+SLEEP = 2
 
 # Validate the TOML file
 def validate_config(config):
@@ -50,17 +50,31 @@ def get_temperature(host, port, message, timeout=2):
     # Extract numeric values using regex
     return float(re.sub(r'[^0-9.]', '', response))
 
-def get_pressures(pressuresock):
-    data = pressuresock.recv(1024)
-    lines = data.decode().split("\r\n")
+def get_pressures(host, port, timeout=2):
+    
     e1, e2, e3, s3, s2, s1 = [0] * 6
-    for line in lines:
-        lst = line.split(',')
-        if len(lst) == 12:
-            # return every second value                                                                     
-            e1, e2, e3, s3, s2, s1 = (lst[i] for i in range(1, len(lst), 2))
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.settimeout(timeout)  # Avoid getting stuck indefinitely                                           
+        s.connect((host, port))
+
+        try:
+            response = s.recv(1024).decode()
+
+            lines = response.split("\r\n")
+            for line in lines:
+                lst = line.split(',')
+                if len(lst) == 12:
+                    # return every second value                                                            \
+                                                                                                            
+                    e1, e2, e3, s3, s2, s1 = (lst[i] for i in range(1, len(lst), 2))
+
+        except socket.timeout:
+            return "Timeout: No response received."
+
     return e1, e2, e3, s3, s2, s1
 
+# -------
 
 def main():
     logger.remove(0)
@@ -104,8 +118,8 @@ def main():
     lakeshore_address = config["lakeshore"]["address"]
     lakeshore_port = config["lakeshore"]["port"]
 
-    multigauge_address = config["maxigauge"]["address"]
-    multigauge_port = config["maxigauge"]["port"]
+    maxigauge_address = config["maxigauge"]["address"]
+    maxigauge_port = config["maxigauge"]["port"]
     
     # ZMQ publisher setup
     context = zmq.Context()
@@ -117,29 +131,23 @@ def main():
     # initialize variables with zero for any case
     t1_val, t2_val, e1_val, e2_val, e3_val, s1_val, s2_val, s3_val = [0] * 8
     
-    # pressure gauges
-    pressuresock = socket.socket()
-    pressuresock.connect((multigauge_address, multigauge_port))
-    
     while True:
         try:
-            # get values
+            # get values:
+                
             # the endline character is important at the end!
             t1_val = get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor1+'\n')
             t2_val = get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor2+'\n')
-            #print("T1: {t1}")
-            #print("T2: {t2}")
 
-            e1_val, e2_val, e3_val, s3_val, s2_val, s1_val = get_pressures(pressuresock)
-            
-            print(e1_val, e2_val, e3_val, s3_val, s2_val, s1_val)
-            
+            e1_val, e2_val, e3_val, s3_val, s2_val, s1_val = get_pressures(maxigauge_address, maxigauge_port)
+                        
+            # test values
             # e1_val = round(random.uniform(5e-10, 1e-4), 8)
             # e2_val = round(random.uniform(5e-10, 1e-4), 8)
             # e3_val = round(random.uniform(5e-10, 1e-4), 8)
-            # s1_val = round(random.uniform(5e-10, 1e-4), 8)
-            # s2_val = round(random.uniform(5e-10, 1e-4), 8)
             # s3_val = round(random.uniform(5e-10, 1e-4), 8)
+            # s2_val = round(random.uniform(5e-10, 1e-4), 8)
+            # s1_val = round(random.uniform(5e-10, 1e-4), 8)
             
             e1 = {
                 "name": "vacuum",
@@ -227,7 +235,6 @@ def main():
 
         except (EOFError, KeyboardInterrupt):
             logger.success("\nUser input cancelled. Aborting...")
-            pressuresock.close()
             break
 
 
