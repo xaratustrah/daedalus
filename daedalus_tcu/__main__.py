@@ -139,8 +139,10 @@ def main():
             t1_val = get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor1+'\n')
             t2_val = get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor2+'\n')
 
-            e1_val, e2_val, e3_val, s3_val, s2_val, s1_val = get_pressures(maxigauge_address, maxigauge_port)
-                        
+            try:
+                e1_val, e2_val, e3_val, s3_val, s2_val, s1_val = get_pressures(maxigauge_address, maxigauge_port)
+            except ConnectionResetError as e:
+                logger.error(f"{e}. Ignoring...")        
             # test values
             # e1_val = round(random.uniform(5e-10, 1e-4), 8)
             # e2_val = round(random.uniform(5e-10, 1e-4), 8)
