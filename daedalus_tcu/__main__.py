@@ -10,7 +10,7 @@ import toml
 import random
 import json
 
-SLEEP = 0.5
+SLEEP = 1
 
 # Validate the TOML file
 def validate_config(config):
@@ -50,6 +50,16 @@ def get_temperature(host, port, message, timeout=2):
     # Extract numeric values using regex
     return float(re.sub(r'[^0-9.]', '', response))
 
+def get_pressures(pressuresock):
+    data = pressuresock.recv(1024)
+    if len(data) != 1024:
+        raise ValueError(f"Expected length 1024, but got {len(data)}")
+
+    lines = data.decode().split("\r\n")
+    lst = lines[1].split(',')
+    
+    return (lst[i] for i in range(1, len(lst), 2))
+
 def main():
     logger.remove(0)
     logger.add(sys.stdout, level="INFO")
@@ -83,7 +93,7 @@ def main():
     config = toml.load(config_path)
     validate_config(config)
 
-    # Extract socket information from the configuration
+    # Extract information from the configuration
     tcu_address = config["tcu"]["address"]
     tcu_port = config["tcu"]["port"]
     
@@ -105,105 +115,122 @@ def main():
     # initialize variables with zero for any case
     t1_val, t2_val, e1_val, e2_val, e3_val, s1_val, s2_val, s3_val = [0] * 8
     
+    # pressure gauges
+    pressuresock = socket.socket()
+    pressuresock.connect((multigauge_address, multigauge_port))
+    
     while True:
-        
-        # get values
-        # the endline character is important at the end!
-        t1_val = get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor1+'\n')
-        t2_val = get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor2+'\n')
-        #print("T1: {t1}")
-        #print("T2: {t2}")
+        try:
+            # get values
+            # the endline character is important at the end!
+            t1_val = get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor1+'\n')
+            t2_val = get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor2+'\n')
+            #print("T1: {t1}")
+            #print("T2: {t2}")
 
-        e1_val = round(random.uniform(5e-10, 1e-4), 8)
-        e2_val = round(random.uniform(5e-10, 1e-4), 8)
-        e3_val = round(random.uniform(5e-10, 1e-4), 8)
-        s1_val = round(random.uniform(5e-10, 1e-4), 8)
-        s2_val = round(random.uniform(5e-10, 1e-4), 8)
-        s3_val = round(random.uniform(5e-10, 1e-4), 8)
-        
-        e1 = {
-            "name": "vacuum",
-            "ch": 1,
-            "dev": "GJ_E1",
-            "ldev": "gj_maxigauge",
-            "value": e1_val,
-            "epoch_time": time.time(),
-        }
-        e2 = {
-            "name": "vacuum",
-            "ch": 2,
-            "dev": "GJ_E2",
-            "ldev": "gj_maxigauge",
-            "value": e2_val,
-            "epoch_time": time.time(),
-        }
-        e3 = {
-            "name": "vacuum",
-            "ch": 3,
-            "dev": "GJ_E3",
-            "ldev": "gj_maxigauge",
-            "value": e3_val,
-            "epoch_time": time.time(),
-        }
-        s1 = {
-            "name": "vacuum",
-            "ch": 4,
-            "dev": "GJ_S1",
-            "ldev": "gj_maxigauge",
-            "value": s1_val,
-            "epoch_time": time.time(),
-        }
-        s2 = {
-            "name": "vacuum",
-            "ch": 5,
-            "dev": "GJ_S2",
-            "ldev": "gj_maxigauge",
-            "value": s2_val,
-            "epoch_time": time.time(),
-        }
-        s3 = {
-            "name": "vacuum",
-            "ch": 6,
-            "dev": "GJ_S3",
-            "ldev": "gj_maxigauge",
-            "value": s3_val,
-            "epoch_time": time.time(),
-        }
+            try:
+                e1_val, e2_val, e3_val, s3_val, s2_val, s1_val = get_pressures(pressuresock)
+            except(ValueError e):
+                logger.error(e)
+            
+            print(e1_val, e2_val, e3_val, s3_val, s2_val, s1_val)
+            
+            # e1_val = round(random.uniform(5e-10, 1e-4), 8)
+            # e2_val = round(random.uniform(5e-10, 1e-4), 8)
+            # e3_val = round(random.uniform(5e-10, 1e-4), 8)
+            # s1_val = round(random.uniform(5e-10, 1e-4), 8)
+            # s2_val = round(random.uniform(5e-10, 1e-4), 8)
+            # s3_val = round(random.uniform(5e-10, 1e-4), 8)
+            
+            e1 = {
+                "name": "vacuum",
+                "ch": 1,
+                "dev": "GJ_E1",
+                "ldev": "gj_maxigauge",
+                "value": e1_val,
+                "epoch_time": time.time(),
+            }
+            e2 = {
+                "name": "vacuum",
+                "ch": 2,
+                "dev": "GJ_E2",
+                "ldev": "gj_maxigauge",
+                "value": e2_val,
+                "epoch_time": time.time(),
+            }
+            e3 = {
+                "name": "vacuum",
+                "ch": 3,
+                "dev": "GJ_E3",
+                "ldev": "gj_maxigauge",
+                "value": e3_val,
+                "epoch_time": time.time(),
+            }
+            s1 = {
+                "name": "vacuum",
+                "ch": 4,
+                "dev": "GJ_S1",
+                "ldev": "gj_maxigauge",
+                "value": s1_val,
+                "epoch_time": time.time(),
+            }
+            s2 = {
+                "name": "vacuum",
+                "ch": 5,
+                "dev": "GJ_S2",
+                "ldev": "gj_maxigauge",
+                "value": s2_val,
+                "epoch_time": time.time(),
+            }
+            s3 = {
+                "name": "vacuum",
+                "ch": 6,
+                "dev": "GJ_S3",
+                "ldev": "gj_maxigauge",
+                "value": s3_val,
+                "epoch_time": time.time(),
+            }
 
-        temperature1 = {
-            "name": "temperature",
-            "dev": "GJ_ColdheadT1",
-            "ldev": "lakeshore",
-            "ch": 1,
-            "value": t1_val,
-            "epoch_time": time.time(),
-        }
+            temperature1 = {
+                "name": "temperature",
+                "dev": "GJ_ColdheadT1",
+                "ldev": "lakeshore",
+                "ch": 1,
+                "value": t1_val,
+                "epoch_time": time.time(),
+            }
 
-        temperature2 = {
-            "name": "temperature",
-            "dev": "GJ_ColdheadT2",
-            "ldev": "lakeshore",
-            "ch": 2,
-            "value": t2_val,
-            "epoch_time": time.time(),
-        }
+            temperature2 = {
+                "name": "temperature",
+                "dev": "GJ_ColdheadT2",
+                "ldev": "lakeshore",
+                "ch": 2,
+                "value": t2_val,
+                "epoch_time": time.time(),
+            }
 
-        allofthem = {
-            "s1": s1,
-            "s2": s2,
-            "s3": s3,
-            "e1": e1,
-            "e2": e2,
-            "e3": e3,
-            "temperature1": temperature1,
-            "temperature2": temperature2,
-        }
+            allofthem = {
+                "s1": s1,
+                "s2": s2,
+                "s3": s3,
+                "e1": e1,
+                "e2": e2,
+                "e3": e3,
+                "temperature1": temperature1,
+                "temperature2": temperature2,
+            }
 
-        message = json.dumps(allofthem)
-        zmq_socket.send_string(message)
-        print("\n", message)
+            message = json.dumps(allofthem)
+            zmq_socket.send_string(message)
+            print("\n", message)
 
-        time.sleep(SLEEP)
+            time.sleep(SLEEP)
+
+        except (EOFError, KeyboardInterrupt):
+            logger.success("\nUser input cancelled. Aborting...")
+            pressuresock.close()
+            break
+
 
 # -------
 
