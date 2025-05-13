@@ -95,8 +95,10 @@ def main():
     #context = zmq.Context()
 
     while True:
+        # the endline character is important at the end!
         print(get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor1+'\n'))
-
+        print(get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor2+'\n'))
+        time.sleep(SLEEP)
 
 # -------
 
