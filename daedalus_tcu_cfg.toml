@@ -2,14 +2,14 @@
 
 [tcu]
 address = "tcp://localhost"
-port = port_number
+port = 5556
 
 [lakeshore]
-sensor1 = "sensor1_label"
-sensor2 = "sensor2_label"
-address = "tcp://localhost"
-port = port_number
+sensor1 = "KRDG?A"
+sensor2 = "KRDG?B"
+address = "192.168.207.120"
+port = 7777
 
 [multigauge]
-address = "tcp://localhost"
-port = port_number
+address = "192.168.207.167"
+port = 8000
