@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Daedalus data aggregator and grafana interface
+Daedalus data aggregator and grafana/influx interface
 
 Jan 2025 xaratustrah@github
 
@@ -30,11 +30,11 @@ def validate_config(config):
         "mcu.port",
         "tcu.address",
         "tcu.port",
-        "grafana.address",
-        "grafana.port",
-        "grafana.org",
-        "grafana.bucket",
-        "grafana.token",
+        "influx.address",
+        "influx.port",
+        "influx.org",
+        "influx.bucket",
+        "influx.token",
         "restapi.resturl1",
         "restapi.resturl2",
         "gas.species",
@@ -172,18 +172,18 @@ def main():
     validate_config(config)
 
     # Extract socket information from the configuration
-    address1 = config["mcu"]["address"]
-    port1 = config["mcu"]["port"]
-    address2 = config["tcu"]["address"]
-    port2 = config["tcu"]["port"]
+    mcu_address = config["mcu"]["address"]
+    mcu_port = config["mcu"]["port"]
+    tcu_address = config["tcu"]["address"]
+    tcu_port = config["tcu"]["port"]
     
-    influx_url=f'{config["grafana"]["address"]}:{config["grafana"]["port"]}'
-    influx_token = config["grafana"]["token"]
-    influx_org = config["grafana"]["org"]
-    influx_bucket = config["grafana"]["bucket"]
+    influx_url=f'{config["influx"]["address"]}:{config["influx"]["port"]}'
+    influx_token = config["influx"]["token"]
+    influx_org = config["influx"]["org"]
+    influx_bucket = config["influx"]["bucket"]
 
-    resturl1 = config["restapi"]["resturl1"]
-    resturl2 = config["restapi"]["resturl2"]
+    restapi_resturl1 = config["restapi"]["resturl1"]
+    restapi_resturl2 = config["restapi"]["resturl2"]
     
     gas_species = config["gas"]["species"]
     
@@ -191,23 +191,23 @@ def main():
     context = zmq.Context()
 
     socket_mcu = context.socket(zmq.SUB)
-    socket_mcu.connect(f"{address1}:{port1}")
+    socket_mcu.connect(f"{mcu_address}:{mcu_port}")
     socket_mcu.setsockopt_string(zmq.SUBSCRIBE, "")
     socket_mcu.setsockopt(zmq.CONFLATE, 1)  # Keep only the most recent message
 
     socket_tcu = context.socket(zmq.SUB)
-    socket_tcu.connect(f"{address2}:{port2}")
+    socket_tcu.connect(f"{tcu_address}:{tcu_port}")
     socket_tcu.setsockopt_string(zmq.SUBSCRIBE, "")
     socket_tcu.setsockopt(zmq.CONFLATE, 1)  # Keep only the most recent message
     
     # REST API
     # Create and start the first thread
-    update_thread1 = threading.Thread(target=update_variable1, kwargs={'url' : resturl1})
+    update_thread1 = threading.Thread(target=update_variable1, kwargs={'url' : restapi_resturl1})
     update_thread1.daemon = True  # Daemon thread will exit when the main program exits
     update_thread1.start()
 
     # Create and start the second thread
-    update_thread2 = threading.Thread(target=update_variable2, kwargs={'url' : resturl2})
+    update_thread2 = threading.Thread(target=update_variable2, kwargs={'url' : restapi_resturl2})
     update_thread2.daemon = True  # Daemon thread will exit when the main program exits
     update_thread2.start()
 
