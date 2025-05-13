@@ -96,8 +96,8 @@ def main():
 
     while True:
         # the endline character is important at the end!
-        print(get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor1+'\n'))
-        print(get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor2+'\n'))
+        print("T1: ", get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor1+'\n'))
+        print("T2: ", get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor2+'\n'))
         time.sleep(SLEEP)
 
 # -------
