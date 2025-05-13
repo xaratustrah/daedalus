@@ -95,9 +95,9 @@ def main():
     
     # ZMQ publisher setup
     context = zmq.Context()
-    socket = context.socket(zmq.PUB)
+    zmq_socket = context.socket(zmq.PUB)
     logger.info(f"Connecting ZMQ publisher to: {tcu_address}:{tcu_port}")
-    socket.bind(f"{tcu_address}:{tcu_port}")
+    zmq_socket.bind(f"{tcu_address}:{tcu_port}")
 
     # initialize variables with zero for any case
     t1, t2, e1, e2, e3, s1, s2, s3 = [0] * 8
@@ -197,7 +197,7 @@ def main():
         }
 
         message = json.dumps(allofthem)
-        socket.send_string(message)
+        zmq_socket.send_string(message)
         print("\n", message)
 
 
