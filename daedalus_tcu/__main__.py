@@ -96,6 +96,7 @@ def main():
     # ZMQ publisher setup
     context = zmq.Context()
     socket = context.socket(zmq.PUB)
+    print(f"{tcu_address}:{tcu_port}")
     socket.bind(f"{tcu_address}:{tcu_port}")
 
     # initialize variables with zero for any case
