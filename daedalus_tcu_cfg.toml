@@ -1,7 +1,7 @@
 # Settings for Daedalus TCU
 
 [tcu]
-address = "tcp://localhost"
+address = "tcp://*"
 port = 5555
 
 [lakeshore]

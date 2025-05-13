@@ -7,6 +7,7 @@ import time
 import sys
 import argparse
 import toml
+import random
 
 SLEEP = 0.5
 
