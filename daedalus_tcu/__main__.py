@@ -16,11 +16,6 @@ def validate_config(config):
     required_keys = [
         "tcu.address",
         "tcu.port",
-        "grafana.address",
-        "grafana.port",
-        "grafana.org",
-        "grafana.bucket",
-        "grafana.token",
         "lakeshore.sensor1",
         "lakeshore.sensor2",
         "lakeshore.address",
@@ -88,12 +83,6 @@ def main():
     validate_config(config)
 
     # Extract socket information from the configuration
-    grafana_address = config["grafana"]["address"]
-    grafana_port = config["grafana"]["port"]
-    grafana_org = config["grafana"]["org"]
-    grafana_bucket = config["grafana"]["bucket"]
-    grafana_token = config["grafana"]["token"]
-
     lakeshore_sensor1 = config["lakeshore"]["sensor1"]
     lakeshore_sensor2 = config["lakeshore"]["sensor2"]
     lakeshore_address = config["lakeshore"]["address"]
