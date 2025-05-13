@@ -81,7 +81,8 @@ def get_pressures(host, port, timeout=2):
     except (socket.timeout, socket.error, ValueError) as e:
         logger.error(f"While reading pressures: {e}. Will try again.")
 
-    return float(e1), float(e2), float(e3), float(s3), float(s2), float(s1)
+    return tuple(map(float, (e1, e2, e3, s3, s2, s1)))
+
 # -------
 
 def main():
