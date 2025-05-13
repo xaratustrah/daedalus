@@ -37,21 +37,28 @@ def validate_arguments(args):
         raise ValueError('Filename must be provided when logging is enabled')
 
 def get_temperature(host, port, message, timeout=2):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.settimeout(timeout)  # Avoid getting stuck indefinitely
-        s.connect((host, port))
-        s.sendall(message.encode())  # Ensure newline for proper request termination
-        
-        try:
+    temp = 0
+ 
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(timeout)  # Avoid getting stuck indefinitely
+            s.connect((host, port))
+            s.sendall(message.encode())  # Ensure newline for proper request termination
+            
             response = s.recv(1024).decode()
-        except socket.timeout:
-            return "Timeout: No response received."
+            
+            if not response:  # Ensure data is received
+                raise ValueError(f"No incoming data?")
+            
+            temp = float(re.sub(r'[^0-9.]', '', response))
+             
+    except (socket.timeout, socket.error, ValueError) as e:
+        print(f"Error occured: {e}. Will try again next time!")
 
     # Extract numeric values using regex
-    return float(re.sub(r'[^0-9.]', '', response))
+    return temp
 
 def get_pressures(host, port, timeout=2):
-    """Retrieve pressure values from a TCP server while handling connection resets."""
     e1, e2, e3, s3, s2, s1 = [0] * 6  # Initialize values
 
     try:
@@ -59,21 +66,20 @@ def get_pressures(host, port, timeout=2):
             s.settimeout(timeout)
             s.connect((host, port))
 
-            response = s.recv(1024)  # This may raise ConnectionResetError
+            response = s.recv(1024).decode()  # This may raise ConnectionResetError
 
             if not response:  # Ensure data is received
-                return None
+                raise ValueError(f"No incoming data?")
 
-            decoded_response = response.decode()
-            lines = decoded_response.split("\r\n")
+            lines = response.split("\r\n")
 
             for line in lines:
                 lst = line.split(',')
                 if len(lst) == 12:
                     e1, e2, e3, s3, s2, s1 = (lst[i] for i in range(1, len(lst), 2))
 
-    except (socket.timeout, ConnectionResetError, socket.error) as e:
-        print(f"Socket error: {e}. Will try again next time!")
+    except (socket.timeout, socket.error, ValueError) as e:
+        print(f"Error occured: {e}. Will try again next time!")
 
     return e1, e2, e3, s3, s2, s1
 # -------
