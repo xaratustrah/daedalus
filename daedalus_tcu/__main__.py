@@ -39,7 +39,7 @@ def get_temperature(host, port, message, timeout=2):
  
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(timeout)  # Avoid getting stuck indefinitely
+            #s.settimeout(timeout)  # Avoid getting stuck indefinitely
             s.connect((host, port))
             s.sendall(message.encode())  # Ensure newline for proper request termination
             
@@ -49,6 +49,8 @@ def get_temperature(host, port, message, timeout=2):
                 raise ValueError(f"No incoming data?")
             
             temp = float(re.sub(r'[^0-9.]', '', response))
+            time.sleep(1)  # Wait exactly 2 seconds before closing (like nc -q 1)
+        # Socket automatically closes at the end of the "with" block
              
     except (socket.timeout, socket.error, ValueError) as e:
         logger.error(f"While reading temperature: {e}. Will try again.")
