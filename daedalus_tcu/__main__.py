@@ -10,13 +10,11 @@ import toml
 import random
 import json
 
-SLEEP = 1
-
-# Validate the TOML file
 def validate_config(config):
     required_keys = [
         "tcu.address",
         "tcu.port",
+        "tcu.update_rate",
         "lakeshore.sensor1",
         "lakeshore.sensor2",
         "lakeshore.address",
@@ -121,6 +119,7 @@ def main():
     # Extract information from the configuration
     tcu_address = config["tcu"]["address"]
     tcu_port = config["tcu"]["port"]
+    tcu_update_rate = config["tcu"]["update_rate"]
     
     lakeshore_sensor1 = config["lakeshore"]["sensor1"]
     lakeshore_sensor2 = config["lakeshore"]["sensor2"]
@@ -242,7 +241,7 @@ def main():
             zmq_socket.send_string(message)
             print("\n", message)
 
-            time.sleep(SLEEP)
+            time.sleep(tcu_update_rate)
 
         except (EOFError, KeyboardInterrupt):
             logger.success("\nUser input cancelled. Aborting...")

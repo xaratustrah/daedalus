@@ -3,6 +3,7 @@
 [tcu]
 address = "tcp://*"
 port = 5555
+update_rate = 2 # in seconds
 
 [lakeshore]
 sensor1 = "KRDG?A"
