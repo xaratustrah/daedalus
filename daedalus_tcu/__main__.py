@@ -49,7 +49,7 @@ def get_temperature(host, port, message, timeout=2):
                 raise ValueError(f"No incoming data?")
             
             temp = float(re.sub(r'[^0-9.]', '', response))
-            time.sleep(1)  # Wait exactly 2 seconds before closing (like nc -q 1)
+            time.sleep(1)  # Wait exactly 1 seconds before closing (like nc -q 1)
         # Socket automatically closes at the end of the "with" block
              
     except (socket.timeout, socket.error, ValueError) as e:
