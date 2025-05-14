@@ -271,7 +271,7 @@ def main():
                             
             if args.log:
                 with open(f'{args.logfile}', 'a') as f:
-                    f.write(flat_string + "\n")
+                    f.write(single_string + "\n")
                         
         except (EOFError, KeyboardInterrupt):
             logger.success("\nUser input cancelled. Aborting...")
