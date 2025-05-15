@@ -269,8 +269,6 @@ def main():
             final_json = combined_json | calculated_json
             
             final_json = update_epoch_time(final_json)
-            # DEBUG
-            print(final_json)
             
             string_list = []
             
