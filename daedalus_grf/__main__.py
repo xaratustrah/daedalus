@@ -137,6 +137,20 @@ def process_jsons(json1, json2):
         "s4": s4,
         "e4": e4,
     }
+
+def update_epoch_time(data):
+    right_now = time.time()
+    if isinstance(data, dict):  # If it's a dictionary
+        for key, value in data.items():
+            if key == "epoch_time":
+                data[key] = right_now  # Update value
+            else:
+                update_epoch_time(value)  # Recurse into sub-elements
+    elif isinstance(data, list):  # If it's a list
+        for item in data:
+            update_epoch_time(item)  # Recurse into each list item
+
+    return data
          
 def main():
     logger.remove(0)
@@ -254,6 +268,7 @@ def main():
 
             final_json = combined_json | calculated_json
             
+            final_json = update_epoch_time(final_json)
             # DEBUG
             print(final_json)
             
