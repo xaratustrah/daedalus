@@ -253,7 +253,10 @@ def main():
             }
 
             final_json = combined_json | calculated_json
-
+            
+            # DEBUG
+            print(final_json)
+            
             string_list = []
             
             for key, value in final_json.items():
