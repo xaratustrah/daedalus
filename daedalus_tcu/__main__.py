@@ -63,7 +63,8 @@ def get_pressures(host, port, timeout=2):
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(timeout)
+            # timeout is not needed, I keep it here.
+            #s.settimeout(timeout)
             s.connect((host, port))
 
             response = s.recv(1024).decode()  # This may raise ConnectionResetError
