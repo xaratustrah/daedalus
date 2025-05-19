@@ -287,7 +287,7 @@ def main():
 
             #print(read_all_adc_channels())
 
-            print(voltage_to_pressure(adc_to_voltage(random.randint(0, 4095))))
+            print(voltage_to_pressure(adc_to_voltage(0)))
             
             
             time.sleep(mcu_update_rate)
