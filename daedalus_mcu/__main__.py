@@ -4,13 +4,29 @@ Daedalus motor controller unit
 2025 xaratustrah@github
 """
 
+import os
+import sys
+
+def is_raspberry_pi():
+    try:
+        with open("/proc/device-tree/model", "r") as model_file:
+            if "Raspberry Pi" in model_file.read():
+                return True
+    except FileNotFoundError:
+        pass
+    return False
+
+if not is_raspberry_pi():
+    print("This script must run on a Raspberry Pi.")
+    sys.exit(1)
+
+print("Running on a Raspberry Pi!")
+
 import socket
 import re
 from loguru import logger
 import zmq
-import os
 import time
-import sys
 import argparse
 import toml
 import random
