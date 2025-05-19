@@ -168,6 +168,9 @@ def main():
         config["mcp23s08_1"]["cs_pin"]
     )
     
+    ipexp0.set_direction(0xfe) # Set all pins as inputs except the pin 0 for the LED
+    ipexp1.set_direction(0xfe) # Set all pins as inputs except the pin 0 for the LED
+
     # ZMQ publisher setup
     context = zmq.Context()
     zmq_socket = context.socket(zmq.PUB)
