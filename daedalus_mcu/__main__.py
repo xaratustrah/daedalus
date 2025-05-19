@@ -86,14 +86,15 @@ def adc_to_voltage(adc_value, adc_range=4095, voltage_range=3.3):
     return (adc_value / adc_range) * voltage_range
 
 def voltage_to_pressure(voltage, cal_points=[[0.64, 3.2], [0, 60]]):
-    """Convert voltage to pressure (mbar) using linear interpolation."""
+    """Convert voltage to pressure (mbar) using linear interpolation, clipped to 0-60 mbar."""
     v1, v2 = cal_points[0]  # Voltage points
     p1, p2 = cal_points[1]  # Corresponding pressure points
 
     # Linear interpolation formula
     pressure = p1 + (voltage - v1) * (p2 - p1) / (v2 - v1)
-    
-    return pressure
+
+    # Clipping the pressure value to be within [0, 60] range
+    return max(p1, min(pressure, p2))
 
 # -------
 
@@ -286,8 +287,8 @@ def main():
             print(f'ioexp1: {decode_mcp23s08_reg(num)}')
 
             #print(read_all_adc_channels())
-            print(adc_to_voltage(2048))
-            #print(voltage_to_pressure(adc_to_voltage(0)))
+
+            print(voltage_to_pressure(adc_to_voltage(random.randint(0, 4095))))
             
             
             time.sleep(mcu_update_rate)
