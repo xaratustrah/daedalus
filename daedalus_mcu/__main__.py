@@ -48,7 +48,11 @@ def validate_config(config):
             if k not in conf:
                 raise ValueError(f"Missing required key: {key}")
             conf = conf[k]
-            
+
+def validate_arguments(args):
+    if args.log and not args.logfile:
+        raise ValueError('Filename must be provided when logging is enabled')
+          
 # -------
 
 def main():
