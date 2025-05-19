@@ -257,7 +257,9 @@ def main():
 
             message = json.dumps(allofthem)
             zmq_socket.send_string(message)
-            print("\n", message)
+            #print("\n", message)
+            
+            adc0_val = read_adc_value(adc0 , 0)
             
             time.sleep(mcu_update_rate)
 
