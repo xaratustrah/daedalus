@@ -290,7 +290,6 @@ def main():
 
             print(voltage_to_pressure(adc_to_voltage(random.randint(0, 4095))))
             
-            
             time.sleep(mcu_update_rate)
 
         except (EOFError, KeyboardInterrupt):
