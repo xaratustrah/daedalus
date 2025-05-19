@@ -265,8 +265,11 @@ def main():
             print("\n", message)
             
             num = ioexp0.read_all_gpio_pins()
-            print(decode_mcp23s08_reg(num))
+            print(f'ioexp0: {decode_mcp23s08_reg(num)}')
             
+            num = ioexp1.read_all_gpio_pins()
+            print(f'ioexp1: {decode_mcp23s08_reg(num)}')
+
             time.sleep(mcu_update_rate)
 
         except (EOFError, KeyboardInterrupt):
