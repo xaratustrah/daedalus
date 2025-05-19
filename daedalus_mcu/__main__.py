@@ -141,8 +141,12 @@ def main():
     logger.info(f"Connecting ZMQ publisher to: {zmq_full_adr}")
     zmq_socket.bind(zmq_full_adr)
 
+
+
+
+
+
     # main loop
-    
     while True:
         try:
             xpos = {
