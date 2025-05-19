@@ -259,7 +259,8 @@ def main():
             zmq_socket.send_string(message)
             print("\n", message)
             
-            ioexp0.print_state_pins()
+            blah = ioexp0.read_all_gpio_pins()
+            print(blah.__class__)
             
             time.sleep(mcu_update_rate)
 
