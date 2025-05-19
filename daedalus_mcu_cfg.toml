@@ -1,21 +1,39 @@
 # Settings for Daedalus MCU
 
-[mot0]
-limit_outside = 30
-limit_inside = 60
+[mcu]
+address = "tcp://*"
+port = 5556
+update_rate = 1 # in seconds
+num_average = 4
+
+# Pressure sensor for nozzle
+[nozpressure]
 cal_points = [[82, 1097], [40, 2249]]
 
-[mot1]
-limit_outside = 30
-limit_inside = 60
-cal_points = [[79, 1160], [30, 2518]]
+# Configuration for MCP23S08
 
-[mot2]
-limit_outside = 30
-limit_inside = 60
-cal_points = [[77, 1240], [27.5, 2612.0]]
+[mcp23s08_0]
+spi_bus = 0
+spi_cs = 0
+spi_max_speed_hz = 5000
+cs_pin = 24
 
-[mot3]
-limit_outside = 30
-limit_inside = 60
-cal_points = [[75.5, 1245.0], [33, 2401]]
+[mcp23s08_1]
+spi_bus = 1
+spi_cs = 0
+spi_max_speed_hz = 5000
+cs_pin = 26
+
+# Configuration for MCP3208
+
+[mcp3208_0]
+spi_bus = 0
+spi_cs = 1
+spi_max_speed_hz = 5000
+cs_pin = 12
+
+[mcp3208_1]
+spi_bus = 1
+spi_cs = 1
+spi_max_speed_hz = 5000
+cs_pin = 11
