@@ -259,6 +259,8 @@ def main():
             zmq_socket.send_string(message)
             print("\n", message)
             
+            ioexp0.print_state_pins()
+            
             time.sleep(mcu_update_rate)
 
         except (EOFError, KeyboardInterrupt):
