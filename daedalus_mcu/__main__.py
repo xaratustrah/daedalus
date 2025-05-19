@@ -33,6 +33,10 @@ import json
 from piadcio.mcp23s08 import MCP23S08
 from piadcio.mcp3208 import MCP3208
 
+# Define LED pins
+LED1 = 0
+LED2 = 0
+
 
 def validate_config(config):
     required_keys = [
@@ -133,6 +137,14 @@ def main():
     mcp3208_1_spi_cs = config['mcp3208_1']['spi_cs']
     mcp3208_1_spi_max_speed_hz = config['mcp3208_1']['spi_max_speed_hz']
     mcp3208_1_cs_pin = config['mcp3208_1']['cs_pin']
+
+
+    adc0 = MCP3208(
+        config["mcp3208_0"]["spi_bus"],
+        config["mcp3208_0"]["spi_cs"],
+        config["mcp3208_0"]["spi_max_speed_hz"],
+        config["mcp3208_0"]["cs_pin"]
+    )
 
     # ZMQ publisher setup
     context = zmq.Context()
