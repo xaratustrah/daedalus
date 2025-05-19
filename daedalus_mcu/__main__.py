@@ -89,32 +89,32 @@ def main():
     validate_config(config)
 
     # Extract information from the configuration
-    self.mcu_address = config['mcu']['address']
-    self.mcu_port = config['mcu']['port']
-    self.mcu_update_rate = config['mcu']['update_rate']
-    self.mcu_num_average = config['mcu']['num_average']
+    mcu_address = config['mcu']['address']
+    mcu_port = config['mcu']['port']
+    mcu_update_rate = config['mcu']['update_rate']
+    mcu_num_average = config['mcu']['num_average']
 
-    self.nozpressure_cal_points = config['nozpressure']['cal_points']
+    nozpressure_cal_points = config['nozpressure']['cal_points']
 
-    self.mcp23s08_0_spi_bus = config['mcp23s08_0']['spi_bus']
-    self.mcp23s08_0_spi_cs = config['mcp23s08_0']['spi_cs']
-    self.mcp23s08_0_spi_max_speed_hz = config['mcp23s08_0']['spi_max_speed_hz']
-    self.mcp23s08_0_cs_pin = config['mcp23s08_0']['cs_pin']
+    mcp23s08_0_spi_bus = config['mcp23s08_0']['spi_bus']
+    mcp23s08_0_spi_cs = config['mcp23s08_0']['spi_cs']
+    mcp23s08_0_spi_max_speed_hz = config['mcp23s08_0']['spi_max_speed_hz']
+    mcp23s08_0_cs_pin = config['mcp23s08_0']['cs_pin']
 
-    self.mcp23s08_1_spi_bus = config['mcp23s08_1']['spi_bus']
-    self.mcp23s08_1_spi_cs = config['mcp23s08_1']['spi_cs']
-    self.mcp23s08_1_spi_max_speed_hz = config['mcp23s08_1']['spi_max_speed_hz']
-    self.mcp23s08_1_cs_pin = config['mcp23s08_1']['cs_pin']
+    mcp23s08_1_spi_bus = config['mcp23s08_1']['spi_bus']
+    mcp23s08_1_spi_cs = config['mcp23s08_1']['spi_cs']
+    mcp23s08_1_spi_max_speed_hz = config['mcp23s08_1']['spi_max_speed_hz']
+    mcp23s08_1_cs_pin = config['mcp23s08_1']['cs_pin']
 
-    self.mcp3208_0_spi_bus = config['mcp3208_0']['spi_bus']
-    self.mcp3208_0_spi_cs = config['mcp3208_0']['spi_cs']
-    self.mcp3208_0_spi_max_speed_hz = config['mcp3208_0']['spi_max_speed_hz']
-    self.mcp3208_0_cs_pin = config['mcp3208_0']['cs_pin']
+    mcp3208_0_spi_bus = config['mcp3208_0']['spi_bus']
+    mcp3208_0_spi_cs = config['mcp3208_0']['spi_cs']
+    mcp3208_0_spi_max_speed_hz = config['mcp3208_0']['spi_max_speed_hz']
+    mcp3208_0_cs_pin = config['mcp3208_0']['cs_pin']
 
-    self.mcp3208_1_spi_bus = config['mcp3208_1']['spi_bus']
-    self.mcp3208_1_spi_cs = config['mcp3208_1']['spi_cs']
-    self.mcp3208_1_spi_max_speed_hz = config['mcp3208_1']['spi_max_speed_hz']
-    self.mcp3208_1_cs_pin = config['mcp3208_1']['cs_pin']
+    mcp3208_1_spi_bus = config['mcp3208_1']['spi_bus']
+    mcp3208_1_spi_cs = config['mcp3208_1']['spi_cs']
+    mcp3208_1_spi_max_speed_hz = config['mcp3208_1']['spi_max_speed_hz']
+    mcp3208_1_cs_pin = config['mcp3208_1']['cs_pin']
 
     # ZMQ publisher setup
     context = zmq.Context()
