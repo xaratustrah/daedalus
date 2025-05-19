@@ -17,10 +17,8 @@ def is_raspberry_pi():
     return False
 
 if not is_raspberry_pi():
-    print("This script must run on a Raspberry Pi.")
+    print("This code is designed for a Raspberry Pi.")
     sys.exit(1)
-
-print("Running on a Raspberry Pi!")
 
 import socket
 import re
@@ -31,6 +29,10 @@ import argparse
 import toml
 import random
 import json
+
+from piadcio.mcp23s08 import MCP23S08
+from piadcio.mcp3208 import MCP3208
+
 
 def validate_config(config):
     required_keys = [
