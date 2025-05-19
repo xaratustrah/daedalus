@@ -285,7 +285,7 @@ def main():
             num = ioexp1.read_all_gpio_pins()
             print(f'ioexp1: {decode_mcp23s08_reg(num)}')
 
-            print(read_all_adc_channels())
+            #print(read_all_adc_channels())
 
             print(voltage_to_pressure(adc_to_voltage(2048)))
             
