@@ -146,6 +146,28 @@ def main():
         config["mcp3208_0"]["cs_pin"]
     )
 
+    adc1 = MCP3208(
+        config["mcp3208_1"]["spi_bus"],
+        config["mcp3208_1"]["spi_cs"],
+        config["mcp3208_1"]["spi_max_speed_hz"],
+        config["mcp3208_1"]["cs_pin"]
+    )
+
+
+    ioexp0 = MCP23S08(
+        config["mcp23s08_0"]["spi_bus"],
+        config["mcp23s08_0"]["spi_cs"],
+        config["mcp23s08_0"]["spi_max_speed_hz"],
+        config["mcp23s08_0"]["cs_pin"]
+    )
+    
+    ioexp1 = MCP23S08(
+        config["mcp23s08_1"]["spi_bus"],
+        config["mcp23s08_1"]["spi_cs"],
+        config["mcp23s08_1"]["spi_max_speed_hz"],
+        config["mcp23s08_1"]["cs_pin"]
+    )
+    
     # ZMQ publisher setup
     context = zmq.Context()
     zmq_socket = context.socket(zmq.PUB)
