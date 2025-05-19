@@ -265,6 +265,11 @@ def main():
 
         except (EOFError, KeyboardInterrupt):
             logger.success("\nUser input cancelled. Aborting...")
+            ioexp0.close()
+            ioexp1.close()
+            adc0.close()
+            adc1.close()
+            
             break
 
 # -------
