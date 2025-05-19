@@ -74,7 +74,12 @@ def validate_config(config):
 def validate_arguments(args):
     if args.log and not args.logfile:
         raise ValueError('Filename must be provided when logging is enabled')
-          
+        
+def decode_mcp23s08(reg_value):
+    """Returns a list representing the state of 8 GPIO pins (True for HIGH, False for LOW)."""    
+    state_vector = [(reg_value >> i) & 1 == 1 for i in range(8)]
+    return state_vector
+  
 # -------
 
 def main():
@@ -260,7 +265,7 @@ def main():
             print("\n", message)
             
             num = ioexp0.read_all_gpio_pins()
-            print(bin(num)[2:])
+            print(get_state_vector(num))
             
             time.sleep(mcu_update_rate)
 
