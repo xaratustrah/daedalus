@@ -17,29 +17,29 @@ import random
 import json
 
 def validate_config(config):
-required_keys = [
-    "mcu.address",
-    "mcu.port",
-    "mcu.update_rate",
-    "mcu.num_average",
-    "nozpressure.cal_points",
-    "mcp23s08_0.spi_bus",
-    "mcp23s08_0.spi_cs",
-    "mcp23s08_0.spi_max_speed_hz",
-    "mcp23s08_0.cs_pin",
-    "mcp23s08_1.spi_bus",
-    "mcp23s08_1.spi_cs",
-    "mcp23s08_1.spi_max_speed_hz",
-    "mcp23s08_1.cs_pin",
-    "mcp3208_0.spi_bus",
-    "mcp3208_0.spi_cs",
-    "mcp3208_0.spi_max_speed_hz",
-    "mcp3208_0.cs_pin",
-    "mcp3208_1.spi_bus",
-    "mcp3208_1.spi_cs",
-    "mcp3208_1.spi_max_speed_hz",
-    "mcp3208_1.cs_pin",
-]
+    required_keys = [
+        "mcu.address",
+        "mcu.port",
+        "mcu.update_rate",
+        "mcu.num_average",
+        "nozpressure.cal_points",
+        "mcp23s08_0.spi_bus",
+        "mcp23s08_0.spi_cs",
+        "mcp23s08_0.spi_max_speed_hz",
+        "mcp23s08_0.cs_pin",
+        "mcp23s08_1.spi_bus",
+        "mcp23s08_1.spi_cs",
+        "mcp23s08_1.spi_max_speed_hz",
+        "mcp23s08_1.cs_pin",
+        "mcp3208_0.spi_bus",
+        "mcp3208_0.spi_cs",
+        "mcp3208_0.spi_max_speed_hz",
+        "mcp3208_0.cs_pin",
+        "mcp3208_1.spi_bus",
+        "mcp3208_1.spi_cs",
+        "mcp3208_1.spi_max_speed_hz",
+        "mcp3208_1.cs_pin",
+    ]
 
     for key in required_keys:
         keys = key.split(".")
