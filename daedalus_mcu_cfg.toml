@@ -8,7 +8,7 @@ num_average = 4
 
 # Pressure sensor for nozzle
 [nozpressure]
-cal_points = [[0.64, 3.2], [0, 60]]
+cal_points = [[0.64, 3.2], [0, 60]] # Voltage divider R1=540 ohm (upper) and R2=160 ohm (lower)
 
 # Configuration for MCP23S08
 
