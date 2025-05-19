@@ -286,7 +286,7 @@ def main():
             print(f'ioexp1: {decode_mcp23s08_reg(num)}')
 
             #print(read_all_adc_channels())
-            print(adc_to_voltage(0))
+            print(adc_to_voltage(2048))
             #print(voltage_to_pressure(adc_to_voltage(0)))
             
             
