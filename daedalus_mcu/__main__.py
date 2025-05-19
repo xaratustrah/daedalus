@@ -260,7 +260,7 @@ def main():
             print("\n", message)
             
             blah = ioexp0.read_all_gpio_pins()
-            print(blah.__class__)
+            print(blah)
             
             time.sleep(mcu_update_rate)
 
