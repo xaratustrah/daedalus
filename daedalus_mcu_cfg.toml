@@ -8,7 +8,7 @@ num_average = 4
 
 # Pressure sensor for nozzle
 [nozpressure]
-cal_points = [[82, 1097], [40, 2249]]
+cal_points = [[0.64, 3.2], [0, 60]]
 
 # Configuration for MCP23S08
 

@@ -7,6 +7,7 @@ Daedalus motor controller unit
 import os
 import sys
 
+# if not raspberry pi, stop here.
 def is_raspberry_pi():
     try:
         with open("/proc/device-tree/model", "r") as model_file:
@@ -79,7 +80,21 @@ def decode_mcp23s08_reg(reg_value):
     """Returns a list representing the state of 8 GPIO pins (True for HIGH, False for LOW)."""    
     state_vector = [(reg_value >> i) & 1 == 1 for i in range(8)]
     return state_vector
-  
+
+def adc_to_voltage(adc_value, adc_range=4095, voltage_range=3.3):
+    """Convert ADC value to voltage."""
+    return (adc_value / adc_range) * voltage_range
+
+def voltage_to_pressure(voltage, cal_points=[[0.64, 3.2], [0, 60]]):
+    """Convert voltage to pressure (mbar) using linear interpolation."""
+    v1, v2 = cal_points[0]  # Voltage points
+    p1, p2 = cal_points[1]  # Corresponding pressure points
+
+    # Linear interpolation formula
+    pressure = p1 + (voltage - v1) * (p2 - p1) / (v2 - v1)
+    
+    return pressure
+
 # -------
 
 def main():
@@ -270,6 +285,11 @@ def main():
             num = ioexp1.read_all_gpio_pins()
             print(f'ioexp1: {decode_mcp23s08_reg(num)}')
 
+            print(read_all_adc_channels())
+
+            print(voltage_to_pressure(adc_to_voltage(2048)))
+            
+            
             time.sleep(mcu_update_rate)
 
         except (EOFError, KeyboardInterrupt):
