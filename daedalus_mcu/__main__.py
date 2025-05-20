@@ -225,6 +225,13 @@ def main():
     # main loop
     while True:
         try:
+            
+            #digital_input_vector = [GPIO.input(pin) for pin in PINS]
+            digital_input_vector = [bool(GPIO.input(pin)) for pin in PINS]
+            print(f"Pin Status: {digital_input_vector}")  # Print as a list
+            
+            shutter_signal_value = digital_input_vector[4]
+            
             xpos = {
                 "name": "position",
                 "ch": "x",
@@ -271,7 +278,7 @@ def main():
                 "dev": "nozzle",
                 "ldev": "daedalus",
                 "type": "signal",
-                "value": random.choice([True, False]),
+                "value": shutter_signal_value,
                 "epoch_time": time.time(),
             }
 
@@ -296,11 +303,8 @@ def main():
 
             message = json.dumps(allofthem)
             zmq_socket.send_string(message)
-            #print("\n", message)
+            print("\n", message)
             
-            status_vector = [GPIO.input(pin) for pin in PINS]
-            print(f"Pin Status: {status_vector}")  # Print as a list
-
             time.sleep(mcu_update_rate)
 
         except (EOFError, KeyboardInterrupt):
