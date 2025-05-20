@@ -210,7 +210,8 @@ def main():
 
 
     # Pin list
-    PINS = [16, 18, 22, 32, 33]
+    
+    PINS = [16, 18, 22, 32, 33, 37]
     LED_PIN = 31  # LED pin
 
     # Setup GPIO
@@ -225,12 +226,20 @@ def main():
     # main loop
     while True:
         try:
-            
+
+            # Read out digital inputs            
             #digital_input_vector = [GPIO.input(pin) for pin in PINS]
             digital_input_vector = [bool(GPIO.input(pin)) for pin in PINS]
             print(f"Pin Status: {digital_input_vector}")  # Print as a list
-            
-            shutter_signal_value = digital_input_vector[4]
+
+            (
+                motx_end_white_value,
+                motx_end_gray_value,
+                motz_end_white_value,
+                motz_end_gray_value,
+                shutter_signal_value,
+                shutter_sensor_value
+            ) = PINS
             
             xpos = {
                 "name": "position",
