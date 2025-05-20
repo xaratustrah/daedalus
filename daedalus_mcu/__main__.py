@@ -278,7 +278,7 @@ def main():
 
             message = json.dumps(allofthem)
             zmq_socket.send_string(message)
-            print("\n", message)
+            #print("\n", message)
             
             num = ioexp0.read_all_gpio_pins()
             print(f'ioexp0: {decode_mcp23s08_reg(num)}')
