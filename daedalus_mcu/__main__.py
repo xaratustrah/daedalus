@@ -292,9 +292,11 @@ def main():
             #print(voltage_to_pressure(adc_to_voltage(random.randint(0, 4095))))
             
             if toggle:
+                print(toggle)
                 ioexp0.write_in_gpio_pins(1 << LED1)
                 toggle = False
             else:
+                print(toggle)
                 ioexp0.write_in_gpio_pins(0 << LED1)
                 toggle = True
                 
