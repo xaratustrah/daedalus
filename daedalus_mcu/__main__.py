@@ -168,39 +168,6 @@ def main():
     mcp3208_1_spi_max_speed_hz = config['mcp3208_1']['spi_max_speed_hz']
     mcp3208_1_cs_pin = config['mcp3208_1']['cs_pin']
 
-
-    # adc0 = MCP3208(
-    #     config["mcp3208_0"]["spi_bus"],
-    #     config["mcp3208_0"]["spi_cs"],
-    #     config["mcp3208_0"]["spi_max_speed_hz"],
-    #     config["mcp3208_0"]["cs_pin"]
-    # )
-
-    # adc1 = MCP3208(
-    #     config["mcp3208_1"]["spi_bus"],
-    #     config["mcp3208_1"]["spi_cs"],
-    #     config["mcp3208_1"]["spi_max_speed_hz"],
-    #     config["mcp3208_1"]["cs_pin"]
-    # )
-
-
-    # ioexp0 = MCP23S08(
-    #     config["mcp23s08_0"]["spi_bus"],
-    #     config["mcp23s08_0"]["spi_cs"],
-    #     config["mcp23s08_0"]["spi_max_speed_hz"],
-    #     config["mcp23s08_0"]["cs_pin"]
-    # )
-    
-    # ioexp1 = MCP23S08(
-    #     config["mcp23s08_1"]["spi_bus"],
-    #     config["mcp23s08_1"]["spi_cs"],
-    #     config["mcp23s08_1"]["spi_max_speed_hz"],
-    #     config["mcp23s08_1"]["cs_pin"]
-    # )
-    
-    # ioexp0.set_direction(0xfe) # Set all pins as inputs except the pin 0 for the LED
-    # ioexp1.set_direction(0xfe) # Set all pins as inputs except the pin 0 for the LED
-
     # ZMQ publisher setup
     context = zmq.Context()
     zmq_socket = context.socket(zmq.PUB)
@@ -239,7 +206,7 @@ def main():
                 motz_end_gray_value,
                 shutter_signal_value,
                 shutter_sensor_value
-            ) = PINS
+            ) = digital_input_vector
             
             xpos = {
                 "name": "position",
@@ -318,11 +285,6 @@ def main():
 
         except (EOFError, KeyboardInterrupt):
             logger.success("\nUser input cancelled. Aborting...")
-            # ioexp0.close()
-            # ioexp1.close()
-            # adc0.close()
-            # adc1.close()
-            
             break
 
 # -------
