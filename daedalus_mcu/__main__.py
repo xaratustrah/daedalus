@@ -31,12 +31,14 @@ import toml
 import random
 import json
 
-from piadcio.mcp23s08 import MCP23S08
-from piadcio.mcp3208 import MCP3208
+import RPi.GPIO as GPIO
 
-# Define LED pins
-LED1 = 0
-LED2 = 0
+#from piadcio.mcp23s08 import MCP23S08
+#from piadcio.mcp3208 import MCP3208
+
+
+# LED state variable
+led_state = False
 
 
 def validate_config(config):
@@ -96,6 +98,13 @@ def voltage_to_pressure(voltage, cal_points=[[0.64, 3.2], [0, 60]]):
     # Clipping the pressure value to be within [0, 60] range
     return max(p1, min(pressure, p2))
 
+
+def toggle_led():
+    """Toggle the LED state."""
+    global led_state
+    led_state = not led_state
+    GPIO.output(LED_PIN, led_state)
+    
 # -------
 
 def main():
@@ -160,37 +169,37 @@ def main():
     mcp3208_1_cs_pin = config['mcp3208_1']['cs_pin']
 
 
-    adc0 = MCP3208(
-        config["mcp3208_0"]["spi_bus"],
-        config["mcp3208_0"]["spi_cs"],
-        config["mcp3208_0"]["spi_max_speed_hz"],
-        config["mcp3208_0"]["cs_pin"]
-    )
+    # adc0 = MCP3208(
+    #     config["mcp3208_0"]["spi_bus"],
+    #     config["mcp3208_0"]["spi_cs"],
+    #     config["mcp3208_0"]["spi_max_speed_hz"],
+    #     config["mcp3208_0"]["cs_pin"]
+    # )
 
-    adc1 = MCP3208(
-        config["mcp3208_1"]["spi_bus"],
-        config["mcp3208_1"]["spi_cs"],
-        config["mcp3208_1"]["spi_max_speed_hz"],
-        config["mcp3208_1"]["cs_pin"]
-    )
+    # adc1 = MCP3208(
+    #     config["mcp3208_1"]["spi_bus"],
+    #     config["mcp3208_1"]["spi_cs"],
+    #     config["mcp3208_1"]["spi_max_speed_hz"],
+    #     config["mcp3208_1"]["cs_pin"]
+    # )
 
 
-    ioexp0 = MCP23S08(
-        config["mcp23s08_0"]["spi_bus"],
-        config["mcp23s08_0"]["spi_cs"],
-        config["mcp23s08_0"]["spi_max_speed_hz"],
-        config["mcp23s08_0"]["cs_pin"]
-    )
+    # ioexp0 = MCP23S08(
+    #     config["mcp23s08_0"]["spi_bus"],
+    #     config["mcp23s08_0"]["spi_cs"],
+    #     config["mcp23s08_0"]["spi_max_speed_hz"],
+    #     config["mcp23s08_0"]["cs_pin"]
+    # )
     
-    ioexp1 = MCP23S08(
-        config["mcp23s08_1"]["spi_bus"],
-        config["mcp23s08_1"]["spi_cs"],
-        config["mcp23s08_1"]["spi_max_speed_hz"],
-        config["mcp23s08_1"]["cs_pin"]
-    )
+    # ioexp1 = MCP23S08(
+    #     config["mcp23s08_1"]["spi_bus"],
+    #     config["mcp23s08_1"]["spi_cs"],
+    #     config["mcp23s08_1"]["spi_max_speed_hz"],
+    #     config["mcp23s08_1"]["cs_pin"]
+    # )
     
-    ioexp0.set_direction(0xfe) # Set all pins as inputs except the pin 0 for the LED
-    ioexp1.set_direction(0xfe) # Set all pins as inputs except the pin 0 for the LED
+    # ioexp0.set_direction(0xfe) # Set all pins as inputs except the pin 0 for the LED
+    # ioexp1.set_direction(0xfe) # Set all pins as inputs except the pin 0 for the LED
 
     # ZMQ publisher setup
     context = zmq.Context()
@@ -200,10 +209,18 @@ def main():
     zmq_socket.bind(zmq_full_adr)
 
 
+    # Pin list
+    PINS = [16, 18, 22, 32, 33]
+    LED_PIN = 31  # LED pin
+
+    # Setup GPIO
+    GPIO.setwarnings(False)  # Suppress warnings
+    GPIO.setmode(GPIO.BOARD)  # Use BOARD numbering
+    for pin in PINS:
+        GPIO.setup(pin, GPIO.IN)  # Set pins as inputs
+    GPIO.setup(LED_PIN, GPIO.OUT)  # Set LED pin as output
 
 
-
-    toggle = True
     
     # main loop
     while True:
@@ -281,25 +298,9 @@ def main():
             zmq_socket.send_string(message)
             #print("\n", message)
             
-            num = ioexp0.read_all_gpio_pins()
-            print(f'ioexp0: {decode_mcp23s08_reg(num)}')
-            
-            num = ioexp1.read_all_gpio_pins()
-            print(f'ioexp1: {decode_mcp23s08_reg(num)}')
+            status_vector = [GPIO.input(pin) for pin in PINS]
+            print(f"Pin Status: {status_vector}")  # Print as a list
 
-            #print(read_all_adc_channels())
-
-            #print(voltage_to_pressure(adc_to_voltage(random.randint(0, 4095))))
-            
-            if toggle:
-                print(toggle)
-                ioexp0.write_in_gpio_pins(1 << LED1)
-                toggle = False
-            else:
-                print(toggle)
-                ioexp0.write_in_gpio_pins(0 << LED1)
-                toggle = True
-                
             time.sleep(mcu_update_rate)
 
         except (EOFError, KeyboardInterrupt):
