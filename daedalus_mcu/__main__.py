@@ -33,14 +33,6 @@ import json
 
 import RPi.GPIO as GPIO
 
-#from piadcio.mcp23s08 import MCP23S08
-#from piadcio.mcp3208 import MCP3208
-
-
-# LED state variable
-led_state = False
-
-
 def validate_config(config):
     required_keys = [
         "mcu.address",
@@ -188,8 +180,9 @@ def main():
         GPIO.setup(pin, GPIO.IN)  # Set pins as inputs
     GPIO.setup(LED_PIN, GPIO.OUT)  # Set LED pin as output
 
+    # LED state variable
+    led_state = False
 
-    
     # main loop
     while True:
         try:
@@ -207,6 +200,9 @@ def main():
                 shutter_signal_value,
                 shutter_sensor_value
             ) = digital_input_vector
+            
+            led_state = not led_state
+            GPIO.output(LED_PIN, led_state)
             
             xpos = {
                 "name": "position",
