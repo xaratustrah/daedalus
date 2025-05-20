@@ -264,7 +264,7 @@ def main():
                 "dev": "nozzle",
                 "ldev": "daedalus",
                 "type": "sensor",
-                "value": random.choice([True, False]),
+                "value": shutter_sensor_value,
                 "epoch_time": time.time(),
             }
 
