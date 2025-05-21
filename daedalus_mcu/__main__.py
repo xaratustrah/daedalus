@@ -237,7 +237,7 @@ def main():
             nozzle_pressure_value = adc_to_voltage(nozzle_pressure_raw)
             #nozzle_pressure_value = adc_to_voltage(nozzle_pressure_raw, nozzle_sensor_cal_points)
             
-            print()
+            print(nozzle_sensor_cal_points)
             print(f"Digital: {digital_input_vector}")  # Print as a list
 
             print(f'potx: (raw={potx_raw:.3f}, val={potx_value:.3f})\n'
