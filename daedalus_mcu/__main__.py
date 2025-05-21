@@ -237,7 +237,10 @@ def main():
             nozzle_pressure_value = adc_to_voltage(nozzle_pressure_raw)
             
             print(f"Digital: {digital_input_vector}")  # Print as a list
-            print(f'potx: (raw={potx_raw}, val={potx_value},\npotz: (raw={potz_raw}, val={potz_value},\nnozzle_pressure: (raw={nozzle_pressure_raw}, val={nozzle_pressure_value})')
+            #print(f'potx: (raw={potx_raw}, val={potx_value},\npotz: (raw={potz_raw}, val={potz_value},\nnozzle_pressure: (raw={nozzle_pressure_raw}, val={nozzle_pressure_value})')
+            print(f'potx: (raw={potx_raw:.3f}, val={potx_value:.3f})\n'
+                  f'potz: (raw={potz_raw:.3f}, val={potz_value:.3f})\n'
+                  f'nozzle_pressure: (raw={nozzle_pressure_raw:.3f}, val={nozzle_pressure_value:.3f})')
             
             
             xpos = {
