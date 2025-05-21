@@ -228,6 +228,7 @@ def main():
             
             adc_value_list = read_all_adc_channels(mcp3208_0_spi_obj, mcp3208_0_num_average)
             print(f'Analog: {adc_value_list}')
+            print()
             
             xpos = {
                 "name": "position",
