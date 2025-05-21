@@ -272,17 +272,20 @@ def main():
                     "epoch_time": time.time(),
                 }
 
-            # ypos = {
-            #     "name": "position",
-            #     "ch": "y",
-            #     "dev": "nozzle",
-            #     "ldev": "daedalus",
-            #     "raw": random.randint(0, 2**12 - 1),
-            #     "value": round(random.uniform(0, 25), 2),
-            #     "epoch_time": time.time(),
-            # }
-
-            zpos = {
+            if motz_end_white_value or motz_end_gray_value:            
+                zpos = {
+                "name": "position",
+                "ch": "z",
+                "dev": "nozzle",
+                "ldev": "daedalus",
+                "limit_plus" : motz_end_white_value,
+                "limit_minus" : motz_end_gray_value,
+                "raw": potz_raw,
+                "value": round(random.uniform(0, 25), 2),
+                "epoch_time": time.time(),
+                }
+            else:
+                zpos = {
                 "name": "position",
                 "ch": "z",
                 "dev": "nozzle",
@@ -290,8 +293,8 @@ def main():
                 "raw": potz_raw,
                 "value": round(random.uniform(0, 25), 2),
                 "epoch_time": time.time(),
-            }
-
+                }
+                
             nozzle_pressure = {
                 "name": "pressure",
                 "ch": "0",
@@ -324,7 +327,6 @@ def main():
 
             allofthem = {
                 "xpos": xpos,
-                #"ypos": ypos,
                 "zpos": zpos,
                 "nozzle_pressure": nozzle_pressure,
                 "shutter_signal": shutter_signal,
