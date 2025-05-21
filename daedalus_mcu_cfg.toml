@@ -10,10 +10,10 @@ update_rate = 0.5 # in seconds
 cal_points = [[0.64, 3.23], [0, 60]] # voltage [V] vs. pressure in [bar] (based on datasheet)
 
 [pot_x]
-cal_points = [[0.64, 3.23], [0, 60]] # voltage [V] vs. position [mm]
+cal_points = [[1.867, 3.057], [0, 19]] # voltage [V] vs. position [mm]
 
 [pot_z]
-cal_points = [[0.64, 3.23], [0, 60]] # voltage [V] vs. position [mm]
+cal_points = [[1.648, 2.962], [0, 19]] # voltage [V] vs. position [mm]
 
 # Configuration for MCP3208
 

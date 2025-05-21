@@ -81,7 +81,15 @@ def voltage_to_pressure(voltage, cal_points):
     return max(p1, min(pressure, p2))
 
 def voltage_to_position(voltage, cal_points):
-    pass
+    """Convert voltage to position (mm) using linear interpolation, clipped to the defined range."""
+    v1, v2 = cal_points[0]  # Voltage points
+    pos1, pos2 = cal_points[1]  # Corresponding position points
+
+    # Linear interpolation formula
+    position = pos1 + (voltage - v1) * (pos2 - pos1) / (v2 - v1)
+
+    # Clipping the position value within the defined range
+    return position
 
 def toggle_led():
     """Toggle the LED state."""
@@ -239,17 +247,17 @@ def main():
                 nozzle_pressure_raw
             ) = analog_input_vector[0:3]
             
-            potx_value = adc_to_voltage(potx_raw)
-            potz_value = adc_to_voltage(potz_raw)
-
             nozzle_pressure_value = voltage_to_pressure(adc_to_voltage(nozzle_pressure_raw), nozzle_sensor_cal_points)
-            
+
+            potx_value = voltage_to_position(adc_to_voltage(potx_raw), pot_x_cal_points)
+            potz_value = voltage_to_position(adc_to_voltage(potz_raw), pot_z_cal_points)
+
             print(nozzle_sensor_cal_points)
             print(f"Digital: {digital_input_vector}")  # Print as a list
 
-            print(f'potx: (raw={potx_raw}, val={potx_value:.3f})\n'
-                  f'potz: (raw={potz_raw}, val={potz_value:.3f})\n'
-                  f'nozzle_pressure: (raw={nozzle_pressure_raw}, val={nozzle_pressure_value:.3f})')
+            print(f'potx: (raw={potx_raw}, val={potx_value:.3f} mm)\n'
+                  f'potz: (raw={potz_raw}, val={potz_value:.3f} mm)\n'
+                  f'nozzle_pressure: (raw={nozzle_pressure_raw}, val={nozzle_pressure_value:.3f} bar)')
                      
             if motx_lim_ring_outside or motx_lim_ring_inside:            
                 xpos = {
