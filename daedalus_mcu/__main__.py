@@ -338,6 +338,7 @@ def main():
             message = json.dumps(allofthem)
             zmq_socket.send_string(message)
             #print("\n", message)
+            print()
             time.sleep(mcu_update_rate)
 
         except (EOFError, KeyboardInterrupt):
