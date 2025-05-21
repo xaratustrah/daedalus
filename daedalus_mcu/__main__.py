@@ -212,7 +212,7 @@ def main():
             # Read out digital inputs            
             #digital_input_vector = [GPIO.input(pin) for pin in PINS]
             digital_input_vector = [bool(GPIO.input(pin)) for pin in PINS]
-            print(f"Pin Status: {digital_input_vector}")  # Print as a list
+            print(f"Digital: {digital_input_vector}")  # Print as a list
 
             (
                 motx_end_white_value,
@@ -227,7 +227,7 @@ def main():
             GPIO.output(LED_PIN, led_state)
             
             adc_value_list = read_all_adc_channels(mcp3208_0_spi_obj, mcp3208_0_num_average)
-            print(adc_value_list)
+            print(f'Analog: {adc_value_list}')
             
             xpos = {
                 "name": "position",
@@ -306,7 +306,7 @@ def main():
         except (EOFError, KeyboardInterrupt):
             logger.success("\nUser input cancelled. Aborting...")
             GPIO.cleanup()
-            spi.close()
+            mcp3208_0_spi_obj.close()
             break
 
 # -------
