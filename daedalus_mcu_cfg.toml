@@ -6,7 +6,7 @@ port = 5556
 update_rate = 0.5 # in seconds
 
 # Pressure sensor for nozzle
-[nozpressure]
+[nozzle_sensor]
 cal_points = [[0.64, 3.23], [0, 60]] # Voltage divider R1=540 ohm (upper) and R2=160 ohm (lower)
 
 # Configuration for MCP3208

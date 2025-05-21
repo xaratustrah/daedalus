@@ -39,7 +39,7 @@ def validate_config(config):
         "mcu.address",
         "mcu.port",
         "mcu.update_rate",
-        "nozpressure.cal_points",
+        "nozzle_sensor.cal_points",
         "mcp3208_0.spi_bus",
         "mcp3208_0.spi_cs",
         "mcp3208_0.spi_max_speed_hz",
@@ -67,7 +67,7 @@ def adc_to_voltage(adc_value, adc_range=4095, voltage_range=3.3):
     """Convert ADC value to voltage."""
     return (adc_value / adc_range) * voltage_range
 
-def voltage_to_pressure(voltage, cal_points=[[0.64, 3.2], [0, 60]]):
+def voltage_to_pressure(voltage, cal_points):
     """Convert voltage to pressure (mbar) using linear interpolation, clipped to 0-60 mbar."""
     v1, v2 = cal_points[0]  # Voltage points
     p1, p2 = cal_points[1]  # Corresponding pressure points
@@ -173,7 +173,7 @@ def main():
     mcu_port = config['mcu']['port']
     mcu_update_rate = config['mcu']['update_rate']
 
-    nozpressure_cal_points = config['nozpressure']['cal_points']
+    nozzle_sensor_cal_points = config['nozzle_sensor']['cal_points']
 
     mcp3208_0_spi_bus = config['mcp3208_0']['spi_bus']
     mcp3208_0_spi_cs = config['mcp3208_0']['spi_cs']
@@ -234,7 +234,7 @@ def main():
             
             potx_value = adc_to_voltage(potx_raw)
             potz_value = adc_to_voltage(potz_raw)
-            nozzle_pressure_value = adc_to_voltage(nozzle_pressure_raw)
+            nozzle_pressure_value = adc_to_voltage(nozzle_pressure_raw), nozzle_sensor_cal_points)
             
             print()
             print(f"Digital: {digital_input_vector}")  # Print as a list
