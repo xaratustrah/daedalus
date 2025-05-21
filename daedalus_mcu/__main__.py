@@ -96,7 +96,55 @@ def toggle_led():
     global led_state
     led_state = not led_state
     GPIO.output(LED_PIN, led_state)
+
+def read_adc_channel(spi, channel):
+    (msg_up, msg_dn) = (
+        (0x06, 0x00) if channel == 0
+        else (0x06, 0x40) if channel == 1
+        else (0x06, 0x80) if channel == 2
+        else (0x06, 0xC0) if channel == 3
+        else (0x07, 0x00) if channel == 4
+        else (0x07, 0x40) if channel == 5
+        else (0x07, 0x80) if channel == 6
+        else (0x07, 0xC0)
+    )
+
+    resp = spi.xfer([msg_up, msg_dn, 0x00])
+    value = (resp[1] << 8) + resp[2]
+    value = int(value)
+
+    # clip value
+    if value <= 0:
+        value = 0
+    elif value > 4095:
+        value = 4095
+
+    return value
+
+def read_all_adc_channels(spi, num_average):
     
+    ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7 = 0, 0, 0, 0, 0, 0, 0, 0
+    # do many measurements and average
+    for i in range(num_average):
+        ch0 += read_adc_channel(spi, 0)
+        ch1 += read_adc_channel(spi, 1)
+        ch2 += read_adc_channel(spi, 2)
+        ch3 += read_adc_channel(spi, 3)
+        ch4 += read_adc_channel(spi, 4)
+        ch5 += read_adc_channel(spi, 5)
+        ch6 += read_adc_channel(spi, 6)
+        ch7 += read_adc_channel(spi, 7)
+    return [
+        int(ch0 / num_average),
+        int(ch1 / num_average),
+        int(ch2 / num_average),
+        int(ch3 / num_average),
+        int(ch4 / num_average),
+        int(ch5 / num_average),
+        int(ch6 / num_average),
+        int(ch7 / num_average),
+    ]
+
 # -------
 
 def main():
@@ -136,29 +184,13 @@ def main():
     mcu_address = config['mcu']['address']
     mcu_port = config['mcu']['port']
     mcu_update_rate = config['mcu']['update_rate']
-    mcu_num_average = config['mcu']['num_average']
 
     nozpressure_cal_points = config['nozpressure']['cal_points']
-
-    mcp23s08_0_spi_bus = config['mcp23s08_0']['spi_bus']
-    mcp23s08_0_spi_cs = config['mcp23s08_0']['spi_cs']
-    mcp23s08_0_spi_max_speed_hz = config['mcp23s08_0']['spi_max_speed_hz']
-    mcp23s08_0_cs_pin = config['mcp23s08_0']['cs_pin']
-
-    mcp23s08_1_spi_bus = config['mcp23s08_1']['spi_bus']
-    mcp23s08_1_spi_cs = config['mcp23s08_1']['spi_cs']
-    mcp23s08_1_spi_max_speed_hz = config['mcp23s08_1']['spi_max_speed_hz']
-    mcp23s08_1_cs_pin = config['mcp23s08_1']['cs_pin']
 
     mcp3208_0_spi_bus = config['mcp3208_0']['spi_bus']
     mcp3208_0_spi_cs = config['mcp3208_0']['spi_cs']
     mcp3208_0_spi_max_speed_hz = config['mcp3208_0']['spi_max_speed_hz']
-    mcp3208_0_cs_pin = config['mcp3208_0']['cs_pin']
-
-    mcp3208_1_spi_bus = config['mcp3208_1']['spi_bus']
-    mcp3208_1_spi_cs = config['mcp3208_1']['spi_cs']
-    mcp3208_1_spi_max_speed_hz = config['mcp3208_1']['spi_max_speed_hz']
-    mcp3208_1_cs_pin = config['mcp3208_1']['cs_pin']
+    mcp3208_0_num_average = config['mcp3208_0']['num_average']
 
     # ZMQ publisher setup
     context = zmq.Context()
@@ -167,13 +199,10 @@ def main():
     logger.info(f"Connecting ZMQ publisher to: {zmq_full_adr}")
     zmq_socket.bind(zmq_full_adr)
 
-
-    # Pin list
-    
+    # Setup GPIO
     PINS = [16, 18, 22, 32, 33, 37]
     LED_PIN = 31  # LED pin
 
-    # Setup GPIO
     GPIO.setwarnings(False)  # Suppress warnings
     GPIO.setmode(GPIO.BOARD)  # Use BOARD numbering
     for pin in PINS:
@@ -182,6 +211,11 @@ def main():
 
     # LED state variable
     led_state = False
+
+    # setup SPI
+    mcp3208_0_spi_obj = spidev.SpiDev()
+    mcp3208_0_spi_obj.open(mcp3208_0_spi_bus, mcp3208_0_spi_cs)
+    mcp3208_0_spi_obj.max_speed_hz = mcp3208_0_spi_max_speed_hz
 
     # main loop
     while True:
@@ -203,6 +237,9 @@ def main():
             
             led_state = not led_state
             GPIO.output(LED_PIN, led_state)
+            
+            adc_value_list = read_all_adc_channels(mcp3208_0_spi_obj, mcp3208_0_num_average)
+            print(adc_value_list)
             
             xpos = {
                 "name": "position",
@@ -275,12 +312,13 @@ def main():
 
             message = json.dumps(allofthem)
             zmq_socket.send_string(message)
-            print("\n", message)
-            
+            #print("\n", message)
             time.sleep(mcu_update_rate)
 
         except (EOFError, KeyboardInterrupt):
             logger.success("\nUser input cancelled. Aborting...")
+            GPIO.cleanup()
+            spi.close()
             break
 
 # -------

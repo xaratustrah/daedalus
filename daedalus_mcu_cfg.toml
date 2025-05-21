@@ -4,25 +4,10 @@
 address = "tcp://*"
 port = 5556
 update_rate = 0.5 # in seconds
-num_average = 4
 
 # Pressure sensor for nozzle
 [nozpressure]
 cal_points = [[0.64, 3.23], [0, 60]] # Voltage divider R1=540 ohm (upper) and R2=160 ohm (lower)
-
-# Configuration for MCP23S08
-
-[mcp23s08_0]
-spi_bus = 0
-spi_cs = 0
-spi_max_speed_hz = 5000
-cs_pin = 24
-
-[mcp23s08_1]
-spi_bus = 1
-spi_cs = 0
-spi_max_speed_hz = 5000
-cs_pin = 26
 
 # Configuration for MCP3208
 
@@ -30,10 +15,4 @@ cs_pin = 26
 spi_bus = 0
 spi_cs = 1
 spi_max_speed_hz = 5000
-cs_pin = 12
-
-[mcp3208_1]
-spi_bus = 1
-spi_cs = 1
-spi_max_speed_hz = 5000
-cs_pin = 11
+num_average = 4
