@@ -210,9 +210,7 @@ def main():
         try:
 
             # Read out digital inputs            
-            #digital_input_vector = [GPIO.input(pin) for pin in PINS]
             digital_input_vector = [bool(GPIO.input(pin)) for pin in PINS]
-            print(f"Digital: {digital_input_vector}")  # Print as a list
 
             (
                 motx_end_white_value,
@@ -226,36 +224,48 @@ def main():
             led_state = not led_state
             GPIO.output(LED_PIN, led_state)
             
-            adc_value_list = read_all_adc_channels(mcp3208_0_spi_obj, mcp3208_0_num_average)
-            print(f'Analog: {adc_value_list[0:3]}')
-            print()
+            # Read out analog inputs            
+            analog_input_vector = read_all_adc_channels(mcp3208_0_spi_obj, mcp3208_0_num_average)
+            (
+                potx_raw,
+                potz_raw,
+                nozzle_pressure_raw
+            ) = analog_input_vector[0:3]
+            
+            potx_value = adc_to_voltage(potx_raw)
+            potz_value = adc_to_voltage(potz_raw)
+            nozzle_pressure_value = adc_to_voltage(nozzle_pressure_raw)
+            
+            print(f"Digital: {digital_input_vector}")  # Print as a list
+            print(f'potx raw:{potx_raw}, potz raw:{potz_raw}, nozzle_pressure_raw:{nozzle_pressure_raw}')
+            
             
             xpos = {
                 "name": "position",
                 "ch": "x",
                 "dev": "nozzle",
                 "ldev": "daedalus",
-                "raw": random.randint(0, 2**12 - 1),
+                "raw": potx_raw,
                 "value": round(random.uniform(0, 25), 2),
                 "epoch_time": time.time(),
             }
 
-            ypos = {
-                "name": "position",
-                "ch": "y",
-                "dev": "nozzle",
-                "ldev": "daedalus",
-                "raw": random.randint(0, 2**12 - 1),
-                "value": round(random.uniform(0, 25), 2),
-                "epoch_time": time.time(),
-            }
+            # ypos = {
+            #     "name": "position",
+            #     "ch": "y",
+            #     "dev": "nozzle",
+            #     "ldev": "daedalus",
+            #     "raw": random.randint(0, 2**12 - 1),
+            #     "value": round(random.uniform(0, 25), 2),
+            #     "epoch_time": time.time(),
+            # }
 
             zpos = {
                 "name": "position",
                 "ch": "z",
                 "dev": "nozzle",
                 "ldev": "daedalus",
-                "raw": random.randint(0, 2**12 - 1),
+                "raw": potz_raw,
                 "value": round(random.uniform(0, 25), 2),
                 "epoch_time": time.time(),
             }
@@ -292,7 +302,7 @@ def main():
 
             allofthem = {
                 "xpos": xpos,
-                "ypos": ypos,
+                #"ypos": ypos,
                 "zpos": zpos,
                 "nozzle_pressure": nozzle_pressure,
                 "shutter_signal": shutter_signal,
