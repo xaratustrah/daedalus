@@ -7,7 +7,10 @@ update_rate = 0.5 # in seconds
 
 # Pressure sensor for nozzle
 [nozzle_sensor]
-cal_points = [[0.64, 3.23], [0, 60]] # Voltage divider R1=540 ohm (upper) and R2=160 ohm (lower)
+cal_points = [[0.64, 3.23], [0, 60]] # voltage [V] vs. pressure in [bar] (based on datasheet)
+
+[poti]
+cal_points = [[0.64, 3.23], [0, 60]] # voltage [V] vs. position [mm]
 
 # Configuration for MCP3208
 

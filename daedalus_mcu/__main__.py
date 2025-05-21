@@ -44,6 +44,7 @@ def validate_config(config):
         "mcp3208_0.spi_cs",
         "mcp3208_0.spi_max_speed_hz",
         "mcp3208_0.num_average",
+        "poti.cal_points",
     ]
 
     for key in required_keys:
@@ -78,6 +79,8 @@ def voltage_to_pressure(voltage, cal_points):
     # Clipping the pressure value to be within [0, 60] range
     return max(p1, min(pressure, p2))
 
+def voltage_to_position(voltage, cal_points):
+    pass
 
 def toggle_led():
     """Toggle the LED state."""
@@ -180,6 +183,8 @@ def main():
     mcp3208_0_spi_max_speed_hz = config['mcp3208_0']['spi_max_speed_hz']
     mcp3208_0_num_average = config['mcp3208_0']['num_average']
 
+    poti_cal_points = config['poti']['cal_points']
+    
     # ZMQ publisher setup
     context = zmq.Context()
     zmq_socket = context.socket(zmq.PUB)
@@ -234,8 +239,8 @@ def main():
             
             potx_value = adc_to_voltage(potx_raw)
             potz_value = adc_to_voltage(potz_raw)
-            nozzle_pressure_value = adc_to_voltage(nozzle_pressure_raw)
-            #nozzle_pressure_value = adc_to_voltage(nozzle_pressure_raw, nozzle_sensor_cal_points)
+            #nozzle_pressure_value = adc_to_voltage(nozzle_pressure_raw)
+            nozzle_pressure_value = voltage_to_pressure(adc_to_voltage(nozzle_pressure_raw), nozzle_sensor_cal_points)
             
             print(nozzle_sensor_cal_points)
             print(f"Digital: {digital_input_vector}")  # Print as a list
