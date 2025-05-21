@@ -32,6 +32,7 @@ import random
 import json
 
 import RPi.GPIO as GPIO
+import spidev
 
 def validate_config(config):
     required_keys = [
