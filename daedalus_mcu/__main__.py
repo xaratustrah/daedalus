@@ -247,9 +247,9 @@ def main():
             print(nozzle_sensor_cal_points)
             print(f"Digital: {digital_input_vector}")  # Print as a list
 
-            print(f'potx: (raw={potx_raw:.3f}, val={potx_value:.3f})\n'
-                  f'potz: (raw={potz_raw:.3f}, val={potz_value:.3f})\n'
-                  f'nozzle_pressure: (raw={nozzle_pressure_raw:.3f}, val={nozzle_pressure_value:.3f})')
+            print(f'potx: (raw={potx_raw}, val={potx_value:.3f})\n'
+                  f'potz: (raw={potz_raw}, val={potz_value:.3f})\n'
+                  f'nozzle_pressure: (raw={nozzle_pressure_raw}, val={nozzle_pressure_value:.3f})')
                      
             if motx_lim_ring_outside or motx_lim_ring_inside:            
                 xpos = {
