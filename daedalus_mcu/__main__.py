@@ -227,7 +227,7 @@ def main():
             GPIO.output(LED_PIN, led_state)
             
             adc_value_list = read_all_adc_channels(mcp3208_0_spi_obj, mcp3208_0_num_average)
-            print(f'Analog: {adc_value_list}')
+            print(f'Analog: {adc_value_list[0:3]}')
             print()
             
             xpos = {
