@@ -44,7 +44,8 @@ def validate_config(config):
         "mcp3208_0.spi_cs",
         "mcp3208_0.spi_max_speed_hz",
         "mcp3208_0.num_average",
-        "poti.cal_points",
+        "pot_x.cal_points",
+        "pot_z.cal_points",
     ]
 
     for key in required_keys:
@@ -183,7 +184,8 @@ def main():
     mcp3208_0_spi_max_speed_hz = config['mcp3208_0']['spi_max_speed_hz']
     mcp3208_0_num_average = config['mcp3208_0']['num_average']
 
-    poti_cal_points = config['poti']['cal_points']
+    pot_x_cal_points = config['pot_x']['cal_points']
+    pot_z_cal_points = config['pot_z']['cal_points']
     
     # ZMQ publisher setup
     context = zmq.Context()
@@ -218,10 +220,10 @@ def main():
             digital_input_vector = [bool(GPIO.input(pin)) for pin in PINS]
 
             (
-                motx_end_white_value,
-                motx_end_gray_value,
-                motz_end_white_value,
-                motz_end_gray_value,
+                motx_lim_ring_outside,
+                motx_lim_ring_inside,
+                motz_lim_downstream,
+                motz_lim_upstream,
                 shutter_signal_value,
                 shutter_sensor_value
             ) = digital_input_vector
@@ -239,7 +241,7 @@ def main():
             
             potx_value = adc_to_voltage(potx_raw)
             potz_value = adc_to_voltage(potz_raw)
-            #nozzle_pressure_value = adc_to_voltage(nozzle_pressure_raw)
+
             nozzle_pressure_value = voltage_to_pressure(adc_to_voltage(nozzle_pressure_raw), nozzle_sensor_cal_points)
             
             print(nozzle_sensor_cal_points)
@@ -249,14 +251,14 @@ def main():
                   f'potz: (raw={potz_raw:.3f}, val={potz_value:.3f})\n'
                   f'nozzle_pressure: (raw={nozzle_pressure_raw:.3f}, val={nozzle_pressure_value:.3f})')
                      
-            if motx_end_white_value or motx_end_gray_value:            
+            if motx_lim_ring_outside or motx_lim_ring_inside:            
                 xpos = {
                     "name": "position",
                     "ch": "x",
                     "dev": "nozzle",
                     "ldev": "daedalus",
-                    "limit_plus" : motx_end_white_value,
-                    "limit_minus" : motx_end_gray_value,
+                    "limit_plus" : motx_lim_ring_outside,
+                    "limit_minus" : motx_lim_ring_inside,
                     "raw": potx_raw,
                     "value": round(random.uniform(0, 25), 2),
                     "epoch_time": time.time(),
@@ -272,14 +274,14 @@ def main():
                     "epoch_time": time.time(),
                 }
 
-            if motz_end_white_value or motz_end_gray_value:            
+            if motz_lim_downstream or motz_lim_upstream:            
                 zpos = {
                 "name": "position",
                 "ch": "z",
                 "dev": "nozzle",
                 "ldev": "daedalus",
-                "limit_plus" : motz_end_white_value,
-                "limit_minus" : motz_end_gray_value,
+                "limit_plus" : motz_lim_downstream,
+                "limit_minus" : motz_lim_upstream,
                 "raw": potz_raw,
                 "value": round(random.uniform(0, 25), 2),
                 "epoch_time": time.time(),

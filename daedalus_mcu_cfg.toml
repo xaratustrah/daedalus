@@ -9,7 +9,10 @@ update_rate = 0.5 # in seconds
 [nozzle_sensor]
 cal_points = [[0.64, 3.23], [0, 60]] # voltage [V] vs. pressure in [bar] (based on datasheet)
 
-[poti]
+[pot_x]
+cal_points = [[0.64, 3.23], [0, 60]] # voltage [V] vs. position [mm]
+
+[pot_z]
 cal_points = [[0.64, 3.23], [0, 60]] # voltage [V] vs. position [mm]
 
 # Configuration for MCP3208
