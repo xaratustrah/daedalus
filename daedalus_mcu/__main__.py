@@ -249,7 +249,7 @@ def main():
                   f'potz: (raw={potz_raw:.3f}, val={potz_value:.3f})\n'
                   f'nozzle_pressure: (raw={nozzle_pressure_raw:.3f}, val={nozzle_pressure_value:.3f})')
                      
-            if shutter_signal_value:            
+            if motx_end_white_value or motx_end_gray_value:            
                 xpos = {
                     "name": "position",
                     "ch": "x",
