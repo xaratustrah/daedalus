@@ -248,17 +248,28 @@ def main():
             print(f'potx: (raw={potx_raw:.3f}, val={potx_value:.3f})\n'
                   f'potz: (raw={potz_raw:.3f}, val={potz_value:.3f})\n'
                   f'nozzle_pressure: (raw={nozzle_pressure_raw:.3f}, val={nozzle_pressure_value:.3f})')
-            
-            
-            xpos = {
-                "name": "position",
-                "ch": "x",
-                "dev": "nozzle",
-                "ldev": "daedalus",
-                "raw": potx_raw,
-                "value": round(random.uniform(0, 25), 2),
-                "epoch_time": time.time(),
-            }
+                     
+            if shutter_signal_value:            
+                xpos = {
+                    "name": "position",
+                    "ch": "x",
+                    "dev": "nozzle",
+                    "ldev": "daedalus",
+                    "limit_plus" : shutter_signal_value,
+                    "raw": potx_raw,
+                    "value": round(random.uniform(0, 25), 2),
+                    "epoch_time": time.time(),
+                }
+            else:
+                xpos = {
+                    "name": "position",
+                    "ch": "x",
+                    "dev": "nozzle",
+                    "ldev": "daedalus",
+                    "raw": potx_raw,
+                    "value": round(random.uniform(0, 25), 2),
+                    "epoch_time": time.time(),
+                }
 
             # ypos = {
             #     "name": "position",
@@ -321,7 +332,7 @@ def main():
 
             message = json.dumps(allofthem)
             zmq_socket.send_string(message)
-            #print("\n", message)
+            print("\n", message)
             time.sleep(mcu_update_rate)
 
         except (EOFError, KeyboardInterrupt):
