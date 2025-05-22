@@ -19,6 +19,8 @@ import requests
 from loguru import logger
 from influxdb_client import InfluxDBClient
 
+from voreas.tools import get_density_value
+
 # REST shared variables
 shared_json1 = {}
 shared_json2 = {}
@@ -250,8 +252,8 @@ def main():
             # take temperature Cold head T1 for calculations
             temperature = combined_json.get("temperature1")["value"]
 
-            velocity = calculate_jet_velocity(temperature, nozzle_pressure)
-            density = calculate_target_density(velocity, s1, s2, s3, s4)
+            # calculate density
+            density = get_density_value(name = gas_species, T = temperature, p = nozzle_pressure, S1 = s1, S2 = s2, S3 = s3, S4 = s4))
 
             calculated_json = {
                 # "velocity": {
