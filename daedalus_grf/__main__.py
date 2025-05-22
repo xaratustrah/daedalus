@@ -220,6 +220,9 @@ def main():
     update_thread2.daemon = True  # Daemon thread will exit when the main program exits
     update_thread2.start()
 
+    # initial value for density
+    density = 0
+    
     while True:
         try:
             message_mcu = socket_mcu.recv_string()
@@ -242,11 +245,10 @@ def main():
             temperature = combined_json.get("temperature1")["value"]
 
             # calculate density
-            density = 0
             try:
                 density = get_density_value(name = gas_species, T = temperature, p = nozzle_pressure, S1 = s1, S2 = s2, S3 = s3, S4 = s4)
             except:
-                logger.error("\nSome issues encountered during density calculation. Aborting...")
+                logger.error("\nSome issues encountered during density calculation. Ignoring...")
 
 
             calculated_json = {
