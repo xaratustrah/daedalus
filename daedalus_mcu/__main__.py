@@ -253,7 +253,7 @@ def main():
             potz_value = voltage_to_position(adc_to_voltage(potz_raw), pot_z_cal_points)
 
             print(nozzle_sensor_cal_points)
-            print(f"Digital: {digital_input_vector}")  # Print as a list
+            print(f"Digital: {digital_input_vector}")
 
             print(f'potx: (raw={potx_raw}, val={potx_value:.3f} mm)\n'
                   f'potz: (raw={potz_raw}, val={potz_value:.3f} mm)\n'
@@ -268,7 +268,7 @@ def main():
                     "limit_plus" : motx_lim_ring_outside,
                     "limit_minus" : motx_lim_ring_inside,
                     "raw": potx_raw,
-                    "value": round(random.uniform(0, 25), 2),
+                    "value": potx_value,
                     "epoch_time": time.time(),
                 }
             else:
@@ -278,7 +278,7 @@ def main():
                     "dev": "nozzle",
                     "ldev": "daedalus",
                     "raw": potx_raw,
-                    "value": round(random.uniform(0, 25), 2),
+                    "value": potx_value,
                     "epoch_time": time.time(),
                 }
 
@@ -291,7 +291,7 @@ def main():
                 "limit_plus" : motz_lim_downstream,
                 "limit_minus" : motz_lim_upstream,
                 "raw": potz_raw,
-                "value": round(random.uniform(0, 25), 2),
+                "value": potz_value,
                 "epoch_time": time.time(),
                 }
             else:
@@ -301,7 +301,7 @@ def main():
                 "dev": "nozzle",
                 "ldev": "daedalus",
                 "raw": potz_raw,
-                "value": round(random.uniform(0, 25), 2),
+                "value": potz_value,
                 "epoch_time": time.time(),
                 }
                 
