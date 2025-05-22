@@ -166,9 +166,9 @@ def main():
 
     try:
         validate_arguments(args)
-    except(ValueError as e):
+    except ValueError as e:
         logger.error(f'{e}. Aborting...')
-        sys.exit()
+        sys.exit(1)
 
     if args.debug:
         logger.info('Debugging mode is enabled')
