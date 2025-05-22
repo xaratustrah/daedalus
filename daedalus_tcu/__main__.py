@@ -103,7 +103,11 @@ def main():
 
     args = parser.parse_args()
 
-    validate_arguments(args)
+    try:
+        validate_arguments(args)
+    except ValueError as e:
+        logger.error(f'{e}. Aborting...')
+        sys.exit(1)
 
     if args.debug:
         logger.info('Debugging mode is enabled')
