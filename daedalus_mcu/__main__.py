@@ -226,7 +226,10 @@ def main():
 
             # Read out digital inputs            
             digital_input_vector = [bool(GPIO.input(pin)) for pin in PINS]
-
+            
+            # sensor value has to be negated because sensor gives HI when shutter is out
+            digital_input_vector[5] = not digital_input_vector[5]
+            
             (
                 motx_lim_ring_outside,
                 motx_lim_ring_inside,
