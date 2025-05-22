@@ -6,6 +6,15 @@
 
 *daedalus* is an integrated control system for internal multiphase targets for heavy ion storage rings.
 
+
+Here are some pics:
+<div style="margin-left:auto;margin-right:auto;text-align:center">
+<img src="https://raw.githubusercontent.com/xaratustrah/daedalus/master/rsrc/dae_top.jpg" width="512">
+<img src="https://raw.githubusercontent.com/xaratustrah/daedalus/master/rsrc/dae_bot.jpg" width="512">
+<img src="https://raw.githubusercontent.com/xaratustrah/daedalus/master/rsrc/dae_front.jpg" width="512">
+<img src="https://raw.githubusercontent.com/xaratustrah/daedalus/master/rsrc/dae_back.jpg" width="512">
+</div>
+
 ## Installation
 Please download the latest version of [Raspberry Pi OS Lite](https://www.raspberrypi.com/software/). Newest versions require setting up username / password already in the imager tool. You can also enable SSH from there. Then you can expand file system using the script `raspi-config`. Then you need a couple of things:
 
