@@ -253,7 +253,7 @@ def main():
             temperature = combined_json.get("temperature1")["value"]
 
             # calculate density
-            density = get_density_value(name = gas_species, T = temperature, p = nozzle_pressure, S1 = s1, S2 = s2, S3 = s3, S4 = s4))
+            density = get_density_value(name = gas_species, T = temperature, p = nozzle_pressure, S1 = s1, S2 = s2, S3 = s3, S4 = s4)
 
             calculated_json = {
                 # "velocity": {
