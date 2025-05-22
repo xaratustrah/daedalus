@@ -348,7 +348,6 @@ def main():
 
             message = json.dumps(allofthem)
             zmq_socket.send_string(message)
-            print("\n", message)
 
             if args.debug:
                 print("\n", message)
