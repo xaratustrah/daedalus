@@ -58,17 +58,6 @@ def flatten_dict(d, parent_key="", sep="_"):
             items.append((k, v))
     return dict(items)
 
-def calculate_jet_velocity(temperature, nozzle_pressure):
-    # meter per seconds
-    # here comes the real forumla, for now just a random number
-    return random.uniform(300, 1500)
-
-
-def calculate_target_density(velocity, s1, s2, s3, s4):
-    # particles per square centimeter
-    # here comes the real forumla, for now just a random number
-    return random.uniform(1.0e10, 1.0e13)
-
 def validate_arguments(args):
     if args.log and not args.logfile:
         raise ValueError('Filename must be provided when logging is enabled')
