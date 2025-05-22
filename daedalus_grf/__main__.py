@@ -2,7 +2,7 @@
 """
 Daedalus data aggregator and grafana/influx interface
 
-Jan 2025 xaratustrah@github
+2025 xaratustrah@github
 
 """
 
