@@ -167,7 +167,7 @@ def main():
     try:
         validate_arguments(args)
     except(ValueError):
-        logger.success('Aborting...')
+        logger.error('Aborting...')
         sys.exit()
 
     if args.debug:
