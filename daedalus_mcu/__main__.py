@@ -355,7 +355,7 @@ def main():
             
             if args.log:
                 with open(f'{args.logfile}', 'a') as f:
-                f.write(message + "\n")
+                    f.write(message + "\n")
 
             # wait
             time.sleep(mcu_update_rate)

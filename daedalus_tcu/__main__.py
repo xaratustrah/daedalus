@@ -248,7 +248,7 @@ def main():
 
             if args.log:
                 with open(f'{args.logfile}', 'a') as f:
-                f.write(message + "\n")
+                    f.write(message + "\n")
 
             time.sleep(tcu_update_rate)
 
