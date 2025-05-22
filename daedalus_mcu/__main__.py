@@ -255,12 +255,12 @@ def main():
             potx_value = voltage_to_position(adc_to_voltage(potx_raw), pot_x_cal_points)
             potz_value = voltage_to_position(adc_to_voltage(potz_raw), pot_z_cal_points)
 
-            print(nozzle_sensor_cal_points)
-            print(f"Digital: {digital_input_vector}")
+            # print(nozzle_sensor_cal_points)
+            # print(f"Digital: {digital_input_vector}")
 
-            print(f'potx: (raw={potx_raw}, val={potx_value:.3f} mm)\n'
-                  f'potz: (raw={potz_raw}, val={potz_value:.3f} mm)\n'
-                  f'nozzle_pressure: (raw={nozzle_pressure_raw}, val={nozzle_pressure_value:.3f} bar)')
+            # print(f'potx: (raw={potx_raw}, val={potx_value:.3f} mm)\n'
+            #       f'potz: (raw={potz_raw}, val={potz_value:.3f} mm)\n'
+            #       f'nozzle_pressure: (raw={nozzle_pressure_raw}, val={nozzle_pressure_value:.3f} bar)')
                      
             if motx_lim_ring_outside or motx_lim_ring_inside:            
                 xpos = {
@@ -348,8 +348,16 @@ def main():
 
             message = json.dumps(allofthem)
             zmq_socket.send_string(message)
-            #print("\n", message)
-            print()
+            print("\n", message)
+
+            if args.debug:
+                print("\n", message)
+            
+            if args.log:
+                with open(f'{args.logfile}', 'a') as f:
+                f.write(message + "\n")
+
+            # wait
             time.sleep(mcu_update_rate)
 
         except (EOFError, KeyboardInterrupt):

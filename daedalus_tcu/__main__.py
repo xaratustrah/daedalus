@@ -242,7 +242,13 @@ def main():
 
             message = json.dumps(allofthem)
             zmq_socket.send_string(message)
-            print("\n", message)
+            
+            if args.debug:
+                print("\n", message)
+
+            if args.log:
+                with open(f'{args.logfile}', 'a') as f:
+                f.write(message + "\n")
 
             time.sleep(tcu_update_rate)
 
