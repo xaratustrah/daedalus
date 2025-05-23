@@ -236,7 +236,7 @@ def main():
                     print(item["name"], ':', str(item["value"]))
                 print()
 
-            if socket_mcu.poll(1000, zmq.POLLIN):  # Check if a new message is available
+            if socket_mcu.poll(7000, zmq.POLLIN):  # Check if a new message is available
                 message_tcu = socket_tcu.recv_string()
             else:
                 print('too late tcu')
