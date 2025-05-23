@@ -20,5 +20,5 @@ cal_points = [[1.648, 2.962], [0, 19]] # voltage [V] vs. position [mm]
 [mcp3208_0]
 spi_bus = 0
 spi_cs = 1
-spi_max_speed_hz = 5000
-num_average = 4
+spi_max_speed_hz = 8000
+num_average = 8
