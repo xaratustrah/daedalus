@@ -225,21 +225,21 @@ def main():
     
     while True:
         try:
-            if socket_mcu.poll(7000, zmq.POLLIN):  # Check if a new message is available
-                message_mcu = socket_mcu.recv_string()
-            else:
-                print('too late mcu')
+#            if socket_mcu.poll(7000, zmq.POLLIN):  # Check if a new message is available
+            message_mcu = socket_mcu.recv_string()
+#            else:
+#                print('too late mcu')
         
-                data_mcu = json.loads(message_mcu)
+            data_mcu = json.loads(message_mcu)
                 
-                for item in data_mcu.values():
-                    print(item["name"], ':', str(item["value"]))
-                print()
+            for key, item in data_mcu.items():
+                print(key, ': ', str(item["value"]))
+            print()
 
-            if socket_mcu.poll(7000, zmq.POLLIN):  # Check if a new message is available
-                message_tcu = socket_tcu.recv_string()
-            else:
-                print('too late tcu')
+ #           if socket_mcu.poll(7000, zmq.POLLIN):  # Check if a new message is available
+            message_tcu = socket_tcu.recv_string()
+ #           else:
+ #               print('too late tcu')
 
             data_tcu = json.loads(message_tcu)
 
