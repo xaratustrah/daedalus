@@ -63,6 +63,7 @@ def validate_config(config):
         "maxigauge.address",
         "maxigauge.port",
         "nozzle_sensor.cal_points",
+        "nozzle_sensor.pressure",        
         "mcp3208_0.spi_bus",
         "mcp3208_0.spi_cs",
         "mcp3208_0.spi_max_speed_hz",
@@ -344,6 +345,11 @@ def main():
     
     
     nozzle_sensor_cal_points = config['nozzle_sensor']['cal_points']
+    nozzle_sensor_pressure = config['nozzle_sensor']['pressure']
+    if nozzle_sensor_pressure < 0:
+        logger.info('Sensor value will be used for nozzle pressure')
+    else:
+        logger.info(f'Fixed value {nozzle_sensor_pressure} will be used for nozzle pressure.')
 
     mcp3208_0_spi_bus = config['mcp3208_0']['spi_bus']
     mcp3208_0_spi_cs = config['mcp3208_0']['spi_cs']
@@ -516,7 +522,10 @@ def main():
                 nozzle_pressure_raw
             ) = analog_input_vector[0:3]
             
-            nozzle_pressure_value = voltage_to_pressure(adc_to_voltage(nozzle_pressure_raw), nozzle_sensor_cal_points)
+            if nozzle_sensor_pressure < 0:
+                nozzle_pressure_value = voltage_to_pressure(adc_to_voltage(nozzle_pressure_raw), nozzle_sensor_cal_points)
+            else:
+                nozzle_pressure_value = nozzle_sensor_pressure
 
             potx_value = voltage_to_position(adc_to_voltage(potx_raw), pot_x_cal_points)
             potz_value = voltage_to_position(adc_to_voltage(potz_raw), pot_z_cal_points)
@@ -610,19 +619,11 @@ def main():
             json_from_rest = process_jsons(shared_json1, shared_json2)
             combined_json = data_tcu | data_mcu | json_from_rest
 
-            s1 = combined_json.get("s1")["value"]
-            s2 = combined_json.get("s2")["value"]
-            s3 = combined_json.get("s3")["value"]
-            s4 = combined_json.get("s4")["value"]
-            
-            nozzle_pressure = combined_json.get("nozzle_pressure")["value"]
-            
-            # take temperature Cold head T1 for calculations
-            temperature = combined_json.get("temperature1")["value"]
+            s4_val = combined_json.get("s4")["value"]
 
             # calculate density
             try:
-                density = get_density_value(name = gas_species, T = temperature, p = nozzle_pressure, S1 = s1, S2 = s2, S3 = s3, S4 = s4)
+                density = get_density_value(name = gas_species, T = t1_val, p = nozzle_pressure_value, S1 = s1_val, S2 = s2_val, S3 = s3_val, S4 = s4_val)
             except:
                 logger.error("\nSome issues encountered during density calculation. Ignoring...")
 

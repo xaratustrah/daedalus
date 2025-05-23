@@ -39,6 +39,7 @@ port = 8000
 # Pressure sensor for nozzle
 [nozzle_sensor]
 cal_points = [[0.64, 3.23], [0, 60]] # voltage [V] vs. pressure in [bar] (based on datasheet)
+pressure = -1 # any positive value will be used for density calculation, negative values disable this option: meaning sensor data will be used.
 
 [pot_x]
 cal_points = [[1.867, 3.057], [0, 19]] # voltage [V] vs. position [mm]
