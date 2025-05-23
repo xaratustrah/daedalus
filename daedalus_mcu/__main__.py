@@ -354,7 +354,11 @@ def main():
             zmq_socket.send_string(message)
 
             if args.debug:
-                print("\n", message)
+                #print("\n", message)
+                for item in message.values():
+                    print(item["name"], ':', str(item["value"]))
+                print()
+
             
             if args.log:
                 with open(f'{args.logfile}', 'a') as f:
