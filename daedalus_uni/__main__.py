@@ -298,6 +298,8 @@ def main():
     config = toml.load(config_path)
     validate_config(config)
 
+    uni_update_rate = config['uni']['update_rate']
+    
     influx_url=f'{config["influx"]["address"]}:{config["influx"]["port"]}'
     influx_token = config["influx"]["token"]
     influx_org = config["influx"]["org"]
@@ -630,6 +632,8 @@ def main():
                     #f.write(single_string + "\n")
                     f.write(json.dumps(final_json) + "\n")
                         
+            time.sleep(uni_update_rate)
+            
         except (EOFError, KeyboardInterrupt):
             logger.success("\nUser input cancelled. Aborting...")
             GPIO.cleanup()
