@@ -227,6 +227,8 @@ def main():
         try:
             message_mcu = socket_mcu.recv_string()
             data_mcu = json.loads(message_mcu)
+            
+            print(data_mcu)
 
             message_tcu = socket_tcu.recv_string()
             data_tcu = json.loads(message_tcu)
@@ -271,9 +273,7 @@ def main():
             final_json = combined_json | calculated_json
             
             final_json = update_epoch_time(final_json)
-            
-            print(final_json)
-            
+                       
             string_list = []
             
             for key, value in final_json.items():
