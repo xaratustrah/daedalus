@@ -225,14 +225,20 @@ def main():
     
     while True:
         try:
-            message_mcu = socket_mcu.recv_string()
-            data_mcu = json.loads(message_mcu)
-            
-            for item in data_mcu.values():
-                print(item["name"], ':', str(item["value"]))
-            print()
+            if socket_mcu.poll(1000, zmq.POLLIN):  # Check if a new message is available
+                message_mcu = socket_mcu.recv_string()
+                print("Received latest:", message.decode())
+        
+                data_mcu = json.loads(message_mcu)
+                
+                for item in data_mcu.values():
+                    print(item["name"], ':', str(item["value"]))
+                print()
 
-            message_tcu = socket_tcu.recv_string()
+            if socket_mcu.poll(1000, zmq.POLLIN):  # Check if a new message is available
+                message_tcu = socket_tcu.recv_string()
+                print("Received latest:", message.decode())
+
             data_tcu = json.loads(message_tcu)
 
             json_from_rest = process_jsons(shared_json1, shared_json2)
