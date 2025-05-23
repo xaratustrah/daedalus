@@ -36,30 +36,6 @@ def validate_arguments(args):
     if args.log and not args.logfile:
         raise ValueError('Filename must be provided when logging is enabled')
 
-def get_temperature(host, port, message, timeout=2):
-    temp = 0
- 
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            #s.settimeout(timeout)  # Avoid getting stuck indefinitely
-            s.connect((host, port))
-            s.sendall(message.encode())  # Ensure newline for proper request termination
-            
-            response = s.recv(1024).decode()
-            
-            if not response:  # Ensure data is received
-                raise ValueError(f"No incoming data?")
-            
-            temp = float(re.sub(r'[^0-9.]', '', response))
-            time.sleep(1)  # Wait exactly 1 seconds before closing (like nc -q 1)
-        # Socket automatically closes at the end of the "with" block
-             
-    except (socket.timeout, socket.error, ValueError) as e:
-        logger.error(f"While reading temperature: {e}. Will try again.")
-
-    # Extract numeric values using regex
-    return temp
-
 def get_pressures(host, port, timeout=2):
     e1, e2, e3, s3, s2, s1 = [0] * 6  # Initialize values
 
@@ -152,12 +128,16 @@ def main():
     
     while True:
         try:
-            t1_val_tmp = lakeshore.get_temperature(message=lakeshore_sensor1)
-            t1_val = t1_val_tmp if t1_val_tmp != 0 else t1_val
-            
-            t2_val_tmp = get_temperature(message=lakeshore_sensor2)
-            t2_val = t2_val_tmp if t2_val_tmp != 0 else t2_val
+            try:
+                t1_val_tmp = lakeshore.get_temperature(message=lakeshore_sensor1)
+                t1_val = t1_val_tmp if t1_val_tmp != 0 else t1_val
 
+                t2_val_tmp = get_temperature(message=lakeshore_sensor2)
+                t2_val = t2_val_tmp if t2_val_tmp != 0 else t2_val
+
+            except:
+                pass
+            
             try:
                 e1_val, e2_val, e3_val, s3_val, s2_val, s1_val = get_pressures(maxigauge_address, maxigauge_port)
             except ConnectionResetError as e:
