@@ -355,8 +355,8 @@ def main():
 
             if args.debug:
                 #print("\n", message)
-                for item in allofthem.values():
-                    print(item["name"], ':', str(item["value"]))
+                for key, item in allofthem.items():
+                    print(key, ': ', str(item["value"]))
                 print()
 
             
