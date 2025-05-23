@@ -1,6 +1,6 @@
 # daedalus - An integrated control system for internal multiphase targets for heavy ion storage rings
 
-<div style="margin-left:auto;margin-right:auto;text-align:center">
+<div style="margin-left:auto;margin-right:auto;text-align:right">
 <img src="https://raw.githubusercontent.com/xaratustrah/daedalus/master/rsrc/daedalus.jpg" width="256">
 </div>
 
