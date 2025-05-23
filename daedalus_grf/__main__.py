@@ -233,7 +233,7 @@ def main():
             data_mcu = json.loads(message_mcu)
                 
             for key, item in data_mcu.items():
-                print(key, ': ', str(item["value"]))
+                print(key, ': ', f"{item['value']:.2f}")
             print()
 
  #           if socket_mcu.poll(7000, zmq.POLLIN):  # Check if a new message is available
