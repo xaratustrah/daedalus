@@ -385,6 +385,10 @@ def main():
     mcp3208_0_spi_obj.open(mcp3208_0_spi_bus, mcp3208_0_spi_cs)
     mcp3208_0_spi_obj.max_speed_hz = mcp3208_0_spi_max_speed_hz
 
+    lakeshore = Lakeshore(host=lakeshore_address, port=lakeshore_port)
+
+    # initialize variables with zero for any case
+    t1_val, t2_val, e1_val, e2_val, e3_val, s1_val, s2_val, s3_val = [0] * 8
 
     # initial value for density
     density = 0
