@@ -2,7 +2,7 @@
 
 [mcu]
 address = "tcp://*"
-port = 5556
+port = 5555
 update_rate = 0.5 # in seconds
 
 # Pressure sensor for nozzle
