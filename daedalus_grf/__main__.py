@@ -63,7 +63,7 @@ def validate_arguments(args):
         raise ValueError('Filename must be provided when logging is enabled')
 
 # Function to update the first shared variable
-def update_variable1(url):
+def update_restapi1(url):
     global shared_json1
     s = requests.Session()
     r = s.get(url, stream=True)
@@ -74,7 +74,7 @@ def update_variable1(url):
             shared_json1 = json.loads(json_str)
 
 # Function to update the second shared variable
-def update_variable2(url):
+def update_restapi2(url):
     global shared_json2
     s = requests.Session()
     r = s.get(url, stream=True)
@@ -211,14 +211,14 @@ def main():
     
     # REST API
     # Create and start the first thread
-    update_thread1 = threading.Thread(target=update_variable1, kwargs={'url' : restapi_resturl1})
-    update_thread1.daemon = True  # Daemon thread will exit when the main program exits
-    update_thread1.start()
+    restapi_thread1 = threading.Thread(target=update_restapi1, kwargs={'url' : restapi_resturl1})
+    restapi_thread1.daemon = True  # Daemon thread will exit when the main program exits
+    restapi_thread1.start()
 
     # Create and start the second thread
-    update_thread2 = threading.Thread(target=update_variable2, kwargs={'url' : restapi_resturl2})
-    update_thread2.daemon = True  # Daemon thread will exit when the main program exits
-    update_thread2.start()
+    restapi_thread2 = threading.Thread(target=update_restapi2, kwargs={'url' : restapi_resturl2})
+    restapi_thread2.daemon = True  # Daemon thread will exit when the main program exits
+    restapi_thread2.start()
 
     # initial value for density
     density = 0
@@ -264,12 +264,6 @@ def main():
 
 
             calculated_json = {
-                # "velocity": {
-                #     "name": "velocity",
-                #     "dev":"GJ",
-                #     "value": velocity,
-                #     "epoch_time": time.time(),
-                # },
                 "density": {
                     "name": "density",
                     "dev":"GJ",

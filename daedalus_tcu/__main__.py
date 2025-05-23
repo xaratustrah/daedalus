@@ -10,6 +10,8 @@ import toml
 import random
 import json
 
+from .lakeshore import Lakeshore
+
 def validate_config(config):
     required_keys = [
         "tcu.address",
@@ -114,7 +116,6 @@ def main():
     if args.log:
         logger.info(f'Logging to file: {args.logfile}')
 
-
     # Read and validate the configuration from the TOML file
     config_path = args.cfg
     if not os.path.exists(config_path):
@@ -143,17 +144,18 @@ def main():
     logger.info(f"Connecting ZMQ publisher to: {zmq_full_adr}")
     zmq_socket.bind(zmq_full_adr)
 
+
+    lakeshore = Lakeshore(host=lakeshore_address, port=lakeshore_port)
+
     # initialize variables with zero for any case
     t1_val, t2_val, e1_val, e2_val, e3_val, s1_val, s2_val, s3_val = [0] * 8
     
     while True:
         try:
-            # get values:
-                
-            # the endline character is important at the end!
-            t1_val_tmp = get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor1+'\n')
+            t1_val_tmp = lakeshore.get_temperature(message=lakeshore_sensor1)
             t1_val = t1_val_tmp if t1_val_tmp != 0 else t1_val
-            t2_val_tmp = get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor2+'\n')
+            
+            t2_val_tmp = get_temperature(message=lakeshore_sensor2)
             t2_val = t2_val_tmp if t2_val_tmp != 0 else t2_val
 
             try:
