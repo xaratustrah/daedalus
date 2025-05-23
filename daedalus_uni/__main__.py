@@ -32,7 +32,7 @@ import requests
 from loguru import logger
 from influxdb_client import InfluxDBClient
 import re
-#import socket
+import socket
 #import zmq
 
 import RPi.GPIO as GPIO
@@ -258,6 +258,32 @@ def read_all_adc_channels(spi, num_average):
         int(ch6 / num_average),
         int(ch7 / num_average),
     ]
+
+def get_pressures(host, port, timeout=2):
+    e1, e2, e3, s3, s2, s1 = [0] * 6  # Initialize values
+
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            # timeout is not needed, I keep it here.
+            #s.settimeout(timeout)
+            s.connect((host, port))
+
+            response = s.recv(1024).decode()  # This may raise ConnectionResetError
+
+            if not response:  # Ensure data is received
+                raise ValueError(f"No incoming data?")
+
+            lines = response.split("\r\n")
+
+            for line in lines:
+                lst = line.split(',')
+                if len(lst) == 12:
+                    e1, e2, e3, s3, s2, s1 = (lst[i] for i in range(1, len(lst), 2))
+
+    except (socket.timeout, socket.error, ValueError) as e:
+        logger.error(f"While reading pressures: {e}. Will try again.")
+
+    return tuple(map(float, (e1, e2, e3, s3, s2, s1)))
 
 # ---------- main function
          
