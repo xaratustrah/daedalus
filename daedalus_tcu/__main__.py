@@ -244,6 +244,7 @@ def main():
             time.sleep(tcu_update_rate)
 
         except (EOFError, KeyboardInterrupt):
+            lakeshore.close()
             logger.success("\nUser input cancelled. Aborting...")
             break
 
