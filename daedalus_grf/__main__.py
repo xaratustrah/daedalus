@@ -225,7 +225,7 @@ def main():
     
     while True:
         try:
-            if socket_mcu.poll(1000, zmq.POLLIN):  # Check if a new message is available
+            if socket_mcu.poll(7000, zmq.POLLIN):  # Check if a new message is available
                 message_mcu = socket_mcu.recv_string()
             else:
                 print('too late mcu')
