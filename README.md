@@ -35,7 +35,7 @@ Install some useful packages:
 
 ```bash
 sudo apt udpate
-sudo apt install -y screen mc tree git python3-pip emacs-nox htop
+sudo apt install -y screen mc tree git python3-pip emacs-nox htop sshfs
 
 ```
 
