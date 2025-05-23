@@ -227,7 +227,8 @@ def main():
         try:
             if socket_mcu.poll(1000, zmq.POLLIN):  # Check if a new message is available
                 message_mcu = socket_mcu.recv_string()
-                print("Received latest:", message.decode())
+            else:
+                print('too late mcu')
         
                 data_mcu = json.loads(message_mcu)
                 
@@ -237,7 +238,8 @@ def main():
 
             if socket_mcu.poll(1000, zmq.POLLIN):  # Check if a new message is available
                 message_tcu = socket_tcu.recv_string()
-                print("Received latest:", message.decode())
+            else:
+                print('too late tcu')
 
             data_tcu = json.loads(message_tcu)
 
