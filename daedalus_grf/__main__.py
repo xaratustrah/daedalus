@@ -234,11 +234,11 @@ def main():
             message_tcu = socket_tcu.recv_string()
             data_tcu = json.loads(message_tcu)
 
-            print('\n\n\ndata_tcu:')
-            print(data_tcu)
-
             json_from_rest = process_jsons(shared_json1, shared_json2)
             combined_json = data_tcu | data_mcu | json_from_rest
+
+            print('\n\n\ncombined json')
+            print(combined_json)
 
             s1 = combined_json.get("s1")["value"]
             s2 = combined_json.get("s2")["value"]
