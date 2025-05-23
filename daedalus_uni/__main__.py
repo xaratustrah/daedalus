@@ -8,7 +8,7 @@ Daedalus unified system
 import os
 import sys
 
-# if not raspberry pi, stop here.
+# if not running on raspberry pi, stop here.
 def is_raspberry_pi():
     try:
         with open("/proc/device-tree/model", "r") as model_file:
@@ -33,7 +33,6 @@ from loguru import logger
 from influxdb_client import InfluxDBClient
 import re
 import socket
-#import zmq
 
 import RPi.GPIO as GPIO
 import spidev
@@ -418,7 +417,7 @@ def main():
                 "dev": "GJ_E1",
                 "ldev": "gj_maxigauge",
                 "value": e1_val,
-                "epoch_time": time.time(),
+                "epoch_time": 0,
             }
             e2 = {
                 "name": "vacuum",
@@ -426,7 +425,7 @@ def main():
                 "dev": "GJ_E2",
                 "ldev": "gj_maxigauge",
                 "value": e2_val,
-                "epoch_time": time.time(),
+                "epoch_time": 0,
             }
             e3 = {
                 "name": "vacuum",
@@ -434,7 +433,7 @@ def main():
                 "dev": "GJ_E3",
                 "ldev": "gj_maxigauge",
                 "value": e3_val,
-                "epoch_time": time.time(),
+                "epoch_time": 0,
             }
             s1 = {
                 "name": "vacuum",
@@ -442,7 +441,7 @@ def main():
                 "dev": "GJ_S1",
                 "ldev": "gj_maxigauge",
                 "value": s1_val,
-                "epoch_time": time.time(),
+                "epoch_time": 0,
             }
             s2 = {
                 "name": "vacuum",
@@ -450,7 +449,7 @@ def main():
                 "dev": "GJ_S2",
                 "ldev": "gj_maxigauge",
                 "value": s2_val,
-                "epoch_time": time.time(),
+                "epoch_time": 0,
             }
             s3 = {
                 "name": "vacuum",
@@ -458,7 +457,7 @@ def main():
                 "dev": "GJ_S3",
                 "ldev": "gj_maxigauge",
                 "value": s3_val,
-                "epoch_time": time.time(),
+                "epoch_time": 0,
             }
 
             temperature1 = {
@@ -467,7 +466,7 @@ def main():
                 "ldev": "lakeshore",
                 "ch": 1,
                 "value": t1_val,
-                "epoch_time": time.time(),
+                "epoch_time": 0,
             }
 
             temperature2 = {
@@ -476,7 +475,7 @@ def main():
                 "ldev": "lakeshore",
                 "ch": 2,
                 "value": t2_val,
-                "epoch_time": time.time(),
+                "epoch_time": 0,
             }
 
             data_tcu = {
@@ -533,7 +532,7 @@ def main():
                     "limit_minus" : motx_lim_ring_inside,
                     "raw": potx_raw,
                     "value": potx_value,
-                    "epoch_time": time.time(),
+                    "epoch_time": 0,
                 }
             else:
                 xpos = {
@@ -543,7 +542,7 @@ def main():
                     "ldev": "daedalus",
                     "raw": potx_raw,
                     "value": potx_value,
-                    "epoch_time": time.time(),
+                    "epoch_time": 0,
                 }
 
             if motz_lim_downstream or motz_lim_upstream:            
@@ -556,7 +555,7 @@ def main():
                 "limit_minus" : motz_lim_upstream,
                 "raw": potz_raw,
                 "value": potz_value,
-                "epoch_time": time.time(),
+                "epoch_time": 0,
                 }
             else:
                 zpos = {
@@ -566,7 +565,7 @@ def main():
                 "ldev": "daedalus",
                 "raw": potz_raw,
                 "value": potz_value,
-                "epoch_time": time.time(),
+                "epoch_time": 0,
                 }
                 
             nozzle_pressure = {
@@ -576,7 +575,7 @@ def main():
                 "ldev": "daedalus",
                 "raw": random.randint(0, 2**12 - 1),
                 "value": round(random.uniform(0, 10), 2),
-                "epoch_time": time.time(),
+                "epoch_time": 0,
             }
 
             shutter_signal = {
@@ -586,7 +585,7 @@ def main():
                 "ldev": "daedalus",
                 "type": "signal",
                 "value": shutter_signal_value,
-                "epoch_time": time.time(),
+                "epoch_time": 0,
             }
 
             shutter_sensor = {
@@ -596,7 +595,7 @@ def main():
                 "ldev": "daedalus",
                 "type": "sensor",
                 "value": shutter_sensor_value,
-                "epoch_time": time.time(),
+                "epoch_time": 0,
             }
 
             data_mcu = {
@@ -634,7 +633,7 @@ def main():
                     "name": "density",
                     "dev":"GJ",
                     "value": f'{density},species="{gas_species}"',
-                    "epoch_time": time.time()
+                    "epoch_time": 0,
                 },
             }
 
@@ -649,7 +648,6 @@ def main():
                 flat_string = ",".join([f"{k}={v}" for k, v in flat_dict.items()])
                 flat_string = flat_string.replace("name=", "").replace(",value", " value").replace(",epoch_time=", " ")
                 flat_string = flat_string[:flat_string.rfind(".")]
-            #    logger.info(flat_string)
                 string_list.append(flat_string)
 
             single_string = "\n".join(string_list)                
@@ -659,7 +657,6 @@ def main():
                             
             if args.log:
                 with open(f'{args.logfile}', 'a') as f:
-                    #f.write(single_string + "\n")
                     f.write(json.dumps(final_json) + "\n")
                         
             time.sleep(uni_update_rate)

@@ -94,13 +94,12 @@ cd git/daedalus
 screen -DRS daedalus
 ```
 
-then create 3 different screens, and run each of these commands there.
+then create a screen, and run this command there:
 
 ```bash
-python3 -m daedalus_mcu --debug --cfg daedalus_mcu_cfg_defaults.toml
-python3 -m daedalus_tcu --debug --cfg daedalus_tcu_cfg_cryring.toml
-python3 -m daedalus_grf --debug --cfg daedalus_grf_cfg_cryring.toml
+python3 -m daedalus_uni --debug --cfg daedalus_uni_cfg_cryring.toml
 ```
+
 
 
 ## Licensing
