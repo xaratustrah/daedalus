@@ -1,7 +1,7 @@
 # daedalus - An integrated control system for internal multiphase targets for heavy ion storage rings
 
 <div style="margin-left:auto;margin-right:auto;text-align:center">
-<img src="https://raw.githubusercontent.com/xaratustrah/daedalus/master/rsrc/daedalus.jpg" width="512">
+<img src="https://raw.githubusercontent.com/xaratustrah/daedalus/master/rsrc/daedalus.jpg" width="256">
 </div>
 
 *daedalus* is an integrated control system for internal multiphase targets for heavy ion storage rings.
@@ -9,7 +9,7 @@
 
 Here are some pics:
 <div style="margin-left:auto;margin-right:auto;text-align:center">
-<img src="https://raw.githubusercontent.com/xaratustrah/daedalus/master/rsrc/dae_top.jpg" width="256">
+<img src="https://raw.githubusercontent.com/xaratustrah/daedalus/master/rsrc/dae_top.jpg" width="512">
 <img src="https://raw.githubusercontent.com/xaratustrah/daedalus/master/rsrc/dae_bot.jpg" width="512">
 <img src="https://raw.githubusercontent.com/xaratustrah/daedalus/master/rsrc/dae_front.jpg" width="512">
 <img src="https://raw.githubusercontent.com/xaratustrah/daedalus/master/rsrc/dae_back.jpg" width="512">
