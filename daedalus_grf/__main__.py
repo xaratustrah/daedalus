@@ -272,6 +272,8 @@ def main():
             
             final_json = update_epoch_time(final_json)
             
+            print(final_json)
+            
             string_list = []
             
             for key, value in final_json.items():
