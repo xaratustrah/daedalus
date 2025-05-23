@@ -292,7 +292,8 @@ def main():
                             
             if args.log:
                 with open(f'{args.logfile}', 'a') as f:
-                    f.write(single_string + "\n")
+                    #f.write(single_string + "\n")
+                    f.write(final_json + "\n")
                         
         except (EOFError, KeyboardInterrupt):
             logger.success("\nUser input cancelled. Aborting...")
