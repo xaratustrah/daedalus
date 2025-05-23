@@ -25,7 +25,6 @@ if not is_raspberry_pi():
 import json
 import toml
 import argparse
-import random
 import time
 import threading
 import requests
@@ -573,8 +572,8 @@ def main():
                 "ch": "0",
                 "dev": "nozzle",
                 "ldev": "daedalus",
-                "raw": random.randint(0, 2**12 - 1),
-                "value": round(random.uniform(0, 10), 2),
+                "raw": nozzle_pressure_raw,
+                "value": nozzle_pressure_value,
                 "epoch_time": 0,
             }
 
