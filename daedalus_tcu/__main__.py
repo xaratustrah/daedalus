@@ -132,7 +132,7 @@ def main():
                 t1_val_tmp = lakeshore.get_temperature(message=lakeshore_sensor1)
                 t1_val = t1_val_tmp if t1_val_tmp != 0 else t1_val
 
-                t2_val_tmp = get_temperature(message=lakeshore_sensor2)
+                t2_val_tmp = lakeshore.get_temperature(message=lakeshore_sensor2)
                 t2_val = t2_val_tmp if t2_val_tmp != 0 else t2_val
 
             except:
