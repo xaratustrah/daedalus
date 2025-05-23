@@ -229,7 +229,8 @@ def main():
             data_mcu = json.loads(message_mcu)
             
             for item in data_mcu.values():
-                print(item["name"], ':', str(item["value"]) + '\n')
+                print(item["name"], ':', str(item["value"]))
+            print()
 
             message_tcu = socket_tcu.recv_string()
             data_tcu = json.loads(message_tcu)
