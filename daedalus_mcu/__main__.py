@@ -358,7 +358,6 @@ def main():
                 for key, item in allofthem.items():
                     print(key, ': ', f"{item['value']:.2f}")
                 print()
-
             
             if args.log:
                 with open(f'{args.logfile}', 'a') as f:

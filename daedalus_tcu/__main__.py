@@ -151,8 +151,10 @@ def main():
             # get values:
                 
             # the endline character is important at the end!
-            t1_val = get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor1+'\n')
-            t2_val = get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor2+'\n')
+            t1_val_tmp = get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor1+'\n')
+            t1_val = t1_val_tmp if t1_val_tmp != 0 else t1_val
+            t2_val_tmp = get_temperature(host=lakeshore_address, port=lakeshore_port, message=lakeshore_sensor2+'\n')
+            t2_val = t2_val_tmp if t2_val_tmp != 0 else t2_val
 
             try:
                 e1_val, e2_val, e3_val, s3_val, s2_val, s1_val = get_pressures(maxigauge_address, maxigauge_port)
@@ -248,8 +250,11 @@ def main():
             zmq_socket.send_string(message)
             
             if args.debug:
-                print("\n", message)
-
+                #print("\n", message)
+                for key, item in allofthem.items():
+                    print(key, ': ', f"{item['value']:.2f}")
+                print()
+            
             if args.log:
                 with open(f'{args.logfile}', 'a') as f:
                     f.write(message + "\n")
