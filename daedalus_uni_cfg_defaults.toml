@@ -1,0 +1,55 @@
+# Settings for Daedalus Unified
+
+# UNI section
+
+[uni]
+update_rate = 2 # in seconds
+
+
+# GRF section
+
+[influx]
+address = "tcp://localhost"
+port = 5557
+org = "myorg"
+bucket = "myexperiment"
+token = "mytoken"
+
+[restapi]
+resturl1 = "http://localhost:8678"
+resturl2 = "http://localhost:8679"
+
+[gas]
+species = "H2"
+
+# TCU section
+
+[lakeshore]
+sensor1 = "KRDG?A"
+sensor2 = "KRDG?B"
+address = "192.168.207.120"
+port = 7777
+
+[maxigauge]
+address = "192.168.207.167"
+port = 8000
+
+# MCU section
+
+# Pressure sensor for nozzle
+[nozzle_sensor]
+cal_points = [[0.64, 3.23], [0, 60]] # voltage [V] vs. pressure in [bar] (based on datasheet)
+
+[pot_x]
+cal_points = [[1.867, 3.057], [0, 19]] # voltage [V] vs. position [mm]
+
+[pot_z]
+cal_points = [[1.648, 2.962], [0, 19]] # voltage [V] vs. position [mm]
+
+# Configuration for MCP3208
+
+[mcp3208_0]
+spi_bus = 0
+spi_cs = 1
+spi_max_speed_hz = 8000
+num_average = 8
