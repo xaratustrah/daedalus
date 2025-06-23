@@ -29,7 +29,7 @@ import time
 import threading
 import requests
 from loguru import logger
-from influxdb_client import InfluxDBClient
+from influxdb_client import InfluxDBClient, WriteOptions
 import re
 import socket
 
@@ -397,6 +397,8 @@ def main():
     # initial value for density
     density = 0
     
+    influx_write_options = WriteOptions(max_retries=1)
+    
     while True:
         try:
             # TCU Jsons
@@ -652,7 +654,7 @@ def main():
 
             single_string = "\n".join(string_list)                
             with InfluxDBClient(url=influx_url, token=influx_token, debug=args.debug) as client:
-                with client.write_api() as writer:
+                with client.write_api(write_options = influx_write_options) as writer:
                     writer.write(bucket=influx_bucket, org=influx_org, record=single_string, write_precision="s")
                             
             if args.log:
