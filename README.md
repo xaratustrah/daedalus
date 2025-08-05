@@ -1,4 +1,5 @@
 # daedalus - An integrated control system for internal multiphase targets for heavy ion storage rings
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16739172.svg)](https://doi.org/10.5281/zenodo.16739172)
 
 <div style="margin-left:auto;margin-right:auto;text-align:right">
 <img src="https://raw.githubusercontent.com/xaratustrah/daedalus/master/rsrc/daedalus.jpg" width="256">

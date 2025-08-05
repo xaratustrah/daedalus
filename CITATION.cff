@@ -1,0 +1,51 @@
+cff-version: 1.2.0
+title: "daedalus - an integrated control system for internal multiphase targets for heavy ion storage rings"
+version: 1.8.0
+license: "GPLv3"
+type: software
+abstract: "Daedalus is an integrated control system for internal multiphase targets for heavy ion storage rings"
+url: "https://github.com/xaratustrah/daedalus"
+doi: 10.5281/zenodo.16739172
+message: "If you use this software, please cite it as below."
+authors:
+  - given-names: Shahab
+    family-names: Sanjari
+    affiliation: GSI Helmholtz Center for Heavy Ion Research
+    orcid: "https://orcid.org/0000-0002-1825-0097"
+  - given-names: Nikolaos
+    family-names: Petridis
+    affiliation: GSI Helmholtz Center for Heavy Ion Research
+    orcid: "https://orcid.org/0000-0002-2629-4727"
+  - given-names: Andreas
+    family-names: Biniskos
+    affiliation: GSI Helmholtz Center for Heavy Ion Research
+    orcid: "https://orcid.org/0009-0007-3777-1369"
+  - given-names: Carlo
+    family-names: Bruno
+    affiliation:  University of Edinburgh
+    orcid: "https://orcid.org/0000-0003-3241-3371"
+  - given-names: Michael
+    family-names: Lestinsky
+    affiliation:  GSI Helmholtz Center for Heavy Ion Research
+    orcid: "https://orcid.org/0000-0001-7384-1917"
+  - given-names: Esther Babette
+    family-names: Menz
+    affiliation:  University of Cologne
+    orcid: "https://orcid.org/0000-0003-1451-7089"
+  - given-names: Zachary Paul
+    family-names: Nunns
+    affiliation:  University of Surrey
+    orcid: "https://orcid.org/0009-0006-8866-817X"
+  - given-names: Ulrich
+    family-names: Popp
+    affiliation:  GSI Helmholtz Center for Heavy Ion Research
+  - given-names: Davide
+    family-names: Racano
+    affiliation:  GSI Helmholtz Center for Heavy Ion Research
+keywords:
+  - physics
+  - heavy ions
+  - accelerators
+  - storage rings
+  - nuclear astrophysics
+
